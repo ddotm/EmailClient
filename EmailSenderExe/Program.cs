@@ -38,7 +38,7 @@ namespace EmailSenderExe
 
 			var emailSender = new Sender();
 
-			await emailSender.Send(config);
+			await emailSender.SendAsync(config);
 
 			await Task.FromResult(0);
 		}

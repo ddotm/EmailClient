@@ -5,7 +5,7 @@ namespace EmailSender
 {
 	public class Sender
 	{
-		public async Task Send(Config config)
+		public async Task SendAsync(Config config)
 		{
 			var message = new MimeMessage();
 
@@ -25,11 +25,11 @@ namespace EmailSender
 
 			message.Body = bodyBuilder.ToMessageBody();
 
-			var smtpClient = await Auth.Office365SmtpClient(config.Id, config.Pwd);
+			var smtpClient = await Auth.Office365SmtpClientAsync(config.Id, config.Pwd);
 
 			await smtpClient.SendAsync(message);
 
-			await Auth.Close(smtpClient);
+			await Auth.CloseAsync(smtpClient);
 		}
 	}
 }
