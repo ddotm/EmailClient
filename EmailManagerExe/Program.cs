@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.EmailManager;
 
-namespace EmailSenderExe
+namespace EmailManagerExe
 {
     internal static class Program
     {
@@ -46,7 +46,7 @@ namespace EmailSenderExe
         {
             var emailClientConfig = new EmailClientConfig
                                     {
-                                        ClientType = ClientType.Office365,
+                                        EmailClientType = EmailClientType.Office365,
                                         Id = SenderEmail,
                                         Pwd = SenderPwd,
                                         FromEmail = new EmailRecipient

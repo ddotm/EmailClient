@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.EmailManager
 {
-    public enum ClientType
+    public enum EmailClientType
     {
         Office365
     }

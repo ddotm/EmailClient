@@ -11,7 +11,7 @@ namespace Infrastructure.EmailManager
             BccEmails = new List<EmailRecipient>();
         }
 
-        public ClientType ClientType { get; set; }
+        public EmailClientType EmailClientType { get; set; }
         public string Id { get; set; }
         public string Pwd { get; set; }
         public EmailRecipient FromEmail { get; set; }
