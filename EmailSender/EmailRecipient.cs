@@ -1,6 +1,6 @@
 ﻿namespace EmailSender
 {
-	public class EmailAddress
+	public class EmailRecipient
 	{
 		public string Name { get; set; }
 		public string Address { get; set; }

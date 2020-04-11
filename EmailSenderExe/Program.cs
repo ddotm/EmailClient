@@ -5,42 +5,69 @@ using System.Threading.Tasks;
 
 namespace EmailSenderExe
 {
-	internal class Program
-	{
-		private static async Task Main(string[] args)
-		{
-			var config = new Config
-			{
-				ClientType = ClientType.Office365,
-				Id = "",
-				Pwd = "", // DO NOT POPULATE, FILLED IN BELOW
-				FromEmail = new EmailAddress
-				{
-					Name = "",
-					Address = ""
-				},
-				ToEmails = new List<EmailAddress>
-				{
-					new EmailAddress
-					{
-						Name = "",
-						Address = ""
-					}
-				},
-				Subject = "Test email subject",
-				HtmlBody = "<h1>Hello World!</h1>",
-				TextBody = "Hello World!"
-			};
-			Console.WriteLine($"Please enter pwd for {config.Id}");
-			var pwd = Console.ReadLine();
-			config.Pwd = pwd;
-			Console.Clear();
+    internal static class Program
+    {
+        private static string SenderName { get; set; }
+        private static string SenderEmail { get; set; }
+        private static string SenderPwd { get; set; }
+        private static string RecipientName { get; set; }
+        private static string RecipientEmail { get; set; }
+        private static string Subject { get; set; }
+        private static string BodyText { get; set; }
 
-			var emailSender = new Sender();
+        private static async Task Main(string[] args)
+        {
+            CollectInput();
+            await TestOffice365Client();
+        }
 
-			await emailSender.SendAsync(config);
+        private static void CollectInput()
+        {
+            Console.WriteLine($"Sender name: ");
+            SenderName = Console.ReadLine();
+            Console.WriteLine($"Sender email address: ");
+            SenderEmail = Console.ReadLine();
+            Console.WriteLine($"Sender password (for {SenderEmail})");
+            SenderPwd = Console.ReadLine();
 
-			await Task.FromResult(0);
-		}
-	}
+            Console.WriteLine($"Name of recipient:");
+            RecipientName = Console.ReadLine();
+            Console.WriteLine($"Recipient email address:");
+            RecipientEmail = Console.ReadLine();
+
+            Console.WriteLine($"Email subject:");
+            Subject = Console.ReadLine();
+            Console.WriteLine($"Email text:");
+            BodyText = Console.ReadLine();
+            Console.Clear();
+        }
+
+        private static async Task TestOffice365Client()
+        {
+            var emailClientConfig = new EmailClientConfig
+                                    {
+                                        ClientType = ClientType.Office365,
+                                        Id = SenderEmail,
+                                        Pwd = SenderPwd,
+                                        FromEmail = new EmailRecipient
+                                                    {
+                                                        Name = SenderName,
+                                                        Address = SenderEmail
+                                                    },
+                                        BccEmails = new List<EmailRecipient>
+                                                    {
+                                                        new EmailRecipient
+                                                        {
+                                                            Name = RecipientName,
+                                                            Address = RecipientEmail
+                                                        }
+                                                    },
+                                        Subject = Subject,
+                                        TextBody = BodyText,
+                                        HtmlBody = $"<p>{BodyText}</p>"
+                                    };
+
+            await EmailClient.SendAsync(emailClientConfig);
+        }
+    }
 }
