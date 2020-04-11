@@ -1,7 +1,7 @@
-﻿using EmailSender;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Infrastructure.EmailManager;
 
 namespace EmailSenderExe
 {

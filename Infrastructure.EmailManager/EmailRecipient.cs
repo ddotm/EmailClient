@@ -1,8 +1,8 @@
-﻿namespace EmailSender
+﻿namespace Infrastructure.EmailManager
 {
-	public class EmailRecipient
-	{
-		public string Name { get; set; }
-		public string Address { get; set; }
-	}
+    public class EmailRecipient
+    {
+        public string Name { get; set; }
+        public string Address { get; set; }
+    }
 }

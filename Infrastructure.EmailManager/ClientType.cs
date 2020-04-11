@@ -1,7 +1,7 @@
-﻿namespace EmailSender
+﻿namespace Infrastructure.EmailManager
 {
-	public enum ClientType
-	{
-		Office365
-	}
+    public enum ClientType
+    {
+        Office365
+    }
 }
