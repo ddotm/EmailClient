@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Infrastructure.EmailManager;
+using Infrastructure.EmailManager.EmailClients;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.EmailManager;
 
 namespace EmailManagerExe
 {
     internal static class Program
     {
+        private static IEmailClient EmailClient { get; set; }
         private static string SenderName { get; set; }
         private static string SenderEmail { get; set; }
         private static string SenderPwd { get; set; }
@@ -18,6 +20,7 @@ namespace EmailManagerExe
         private static async Task Main(string[] args)
         {
             CollectInput();
+
             await TestOffice365Client();
         }
 
@@ -48,26 +51,32 @@ namespace EmailManagerExe
                                     {
                                         EmailClientType = EmailClientType.Office365,
                                         Id = SenderEmail,
-                                        Pwd = SenderPwd,
-                                        FromEmail = new EmailRecipient
-                                                    {
-                                                        Name = SenderName,
-                                                        Address = SenderEmail
-                                                    },
-                                        BccEmails = new List<EmailRecipient>
-                                                    {
-                                                        new EmailRecipient
-                                                        {
-                                                            Name = RecipientName,
-                                                            Address = RecipientEmail
-                                                        }
-                                                    },
-                                        Subject = Subject,
-                                        TextBody = BodyText,
-                                        HtmlBody = $"<p>{BodyText}</p>"
+                                        Pwd = SenderPwd
                                     };
+            await using (EmailClient = new Office365EmailClient(emailClientConfig))
+            {
+                var emailMessageConfig = new EmailMessageConfig
+                                         {
+                                             FromEmail = new EmailRecipient
+                                                         {
+                                                             Name = SenderName,
+                                                             Address = SenderEmail
+                                                         },
+                                             BccEmails = new List<EmailRecipient>
+                                                         {
+                                                             new EmailRecipient
+                                                             {
+                                                                 Name = RecipientName,
+                                                                 Address = RecipientEmail
+                                                             }
+                                                         },
+                                             Subject = Subject,
+                                             TextBody = BodyText,
+                                             HtmlBody = $"<p>{BodyText}</p>"
+                                         };
 
-            await EmailClient.SendAsync(emailClientConfig);
+                await EmailClient.SendAsync(emailMessageConfig);
+            }
         }
     }
 }

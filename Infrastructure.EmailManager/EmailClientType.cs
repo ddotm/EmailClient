@@ -2,6 +2,7 @@
 {
     public enum EmailClientType
     {
-        Office365
+        Office365,
+        Mailgun
     }
 }
