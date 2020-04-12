@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Infrastructure.EmailManager.EmailClients
 {
-    public interface IEmailClient: IAsyncDisposable
+    public interface IEmailClient
     {
         Task SendAsync(EmailMessageConfig emailMessageConfig);
     }

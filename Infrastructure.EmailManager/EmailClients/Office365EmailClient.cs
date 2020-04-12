@@ -2,11 +2,12 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using System;
 using System.Threading.Tasks;
 
 namespace Infrastructure.EmailManager.EmailClients
 {
-    public class Office365EmailClient : IEmailClient
+    public class Office365EmailClient : IEmailClient, IAsyncDisposable
     {
         private readonly EmailClientConfig _emailClientConfig;
         private SmtpClient SmtpClient { get; set; }
