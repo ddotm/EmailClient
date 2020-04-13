@@ -34,8 +34,8 @@ namespace EmailManagerExe
 
             Console.WriteLine($"Mailgun API key:");
             EmailClientConfig.MailgunApiKey = Console.ReadLine();
-            Console.WriteLine($"Mailgun domain:");
-            EmailClientConfig.MailgunDomain = Console.ReadLine();
+            Console.WriteLine($"Mailgun sending domain:");
+            EmailClientConfig.MailgunSendingDomain = Console.ReadLine();
 
             EmailMessageConfig.BccEmails.Add(new EmailRecipient());
             Console.WriteLine($"Name of recipient:");
@@ -58,7 +58,7 @@ namespace EmailManagerExe
             EmailClientConfig.Pwd = "";
 
             EmailClientConfig.MailgunApiKey = "";
-            EmailClientConfig.MailgunDomain = "";
+            EmailClientConfig.MailgunSendingDomain = "";
 
             EmailMessageConfig.BccEmails.Add(new EmailRecipient());
             EmailMessageConfig.BccEmails[0].Name = "";
@@ -87,7 +87,7 @@ namespace EmailManagerExe
                                     {
                                         EmailClientType = EmailClientType.Mailgun,
                                         MailgunApiKey = EmailClientConfig.MailgunApiKey,
-                                        MailgunDomain = EmailClientConfig.MailgunDomain
+                                        MailgunSendingDomain = EmailClientConfig.MailgunSendingDomain
                                     };
             var emailClient = new MailgunEmailClient(emailClientConfig);
             await emailClient.SendAsync(EmailMessageConfig);

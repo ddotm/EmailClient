@@ -21,7 +21,7 @@ namespace Infrastructure.EmailManager.EmailClients
             var body =
                 $"from={msg.FromEmail.Name} <{msg.FromEmail.Address}>&to={msg.BccEmails[0].Address}&subject={msg.Subject}&text={msg.TextBody}";
 
-            var request = new RestRequest($@"{_emailClientConfig.MailgunDomain}/messages", Method.POST)
+            var request = new RestRequest($@"{_emailClientConfig.MailgunSendingDomain}/messages", Method.POST)
                .AddHeader("Authorization", $"Basic {base64ApiKey}")
                .AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.Body = new RequestBody("application/x-www-form-urlencoded", "", body);

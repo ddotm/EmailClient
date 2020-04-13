@@ -10,6 +10,6 @@
         public string Id { get; set; }
         public string Pwd { get; set; }
         public string MailgunApiKey { get; set; }
-        public string MailgunDomain { get; set; }
+        public string MailgunSendingDomain { get; set; }
     }
 }
