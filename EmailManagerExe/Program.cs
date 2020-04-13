@@ -1,7 +1,6 @@
 ﻿using Infrastructure.EmailManager;
 using Infrastructure.EmailManager.EmailClients;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EmailManagerExe
@@ -9,20 +8,15 @@ namespace EmailManagerExe
     internal static class Program
     {
         private static EmailMessageConfig EmailMessageConfig { get; set; }
-        private static string SenderName { get; set; }
-        private static string SenderEmail { get; set; }
-        private static string SenderPwd { get; set; }
-        private static string ApiKey { get; set; }
-        private static string RecipientName { get; set; }
-        private static string RecipientEmail { get; set; }
-        private static string Subject { get; set; }
-        private static string BodyText { get; set; }
+        private static EmailClientConfig EmailClientConfig { get; set; }
 
         private static async Task Main(string[] args)
         {
+            EmailClientConfig = new EmailClientConfig();
+            EmailMessageConfig = new EmailMessageConfig();
+
             CollectInput();
-            // HardcodeInput();
-            PopulateMessage();
+            //HardcodeInput();
 
             await TestOffice365Client();
             await TestMailgunClient();
@@ -31,63 +25,48 @@ namespace EmailManagerExe
         private static void CollectInput()
         {
             Console.WriteLine($"Sender name: ");
-            SenderName = Console.ReadLine();
+            EmailMessageConfig.FromEmail.Name = Console.ReadLine();
             Console.WriteLine($"Sender email address: ");
-            SenderEmail = Console.ReadLine();
-            Console.WriteLine($"Sender password (for {SenderEmail})");
-            SenderPwd = Console.ReadLine();
+            EmailMessageConfig.FromEmail.Address = Console.ReadLine();
+            Console.WriteLine($"Sender password (for {EmailMessageConfig.FromEmail.Address})");
+            EmailClientConfig.Id = EmailMessageConfig.FromEmail.Address;
+            EmailClientConfig.Pwd = Console.ReadLine();
 
             Console.WriteLine($"Mailgun API key:");
-            ApiKey = Console.ReadLine();
+            EmailClientConfig.MailgunApiKey = Console.ReadLine();
+            Console.WriteLine($"Mailgun domain:");
+            EmailClientConfig.MailgunDomain = Console.ReadLine();
 
+            EmailMessageConfig.BccEmails.Add(new EmailRecipient());
             Console.WriteLine($"Name of recipient:");
-            RecipientName = Console.ReadLine();
+            EmailMessageConfig.BccEmails[0].Name = Console.ReadLine();
             Console.WriteLine($"Recipient email address:");
-            RecipientEmail = Console.ReadLine();
+            EmailMessageConfig.BccEmails[0].Address = Console.ReadLine();
 
             Console.WriteLine($"Email subject:");
-            Subject = Console.ReadLine();
+            EmailMessageConfig.Subject = Console.ReadLine();
             Console.WriteLine($"Email text:");
-            BodyText = Console.ReadLine();
+            EmailMessageConfig.TextBody = Console.ReadLine();
             Console.Clear();
         }
 
         private static void HardcodeInput()
         {
-            SenderName = "";
-            SenderEmail = "";
-            SenderPwd = "";
+            EmailMessageConfig.FromEmail.Name = "";
+            EmailMessageConfig.FromEmail.Address = "";
+            EmailClientConfig.Id = EmailMessageConfig.FromEmail.Address;
+            EmailClientConfig.Pwd = "";
 
-            ApiKey = "";
+            EmailClientConfig.MailgunApiKey = "";
+            EmailClientConfig.MailgunDomain = "";
 
-            RecipientName = "";
-            RecipientEmail = "";
+            EmailMessageConfig.BccEmails.Add(new EmailRecipient());
+            EmailMessageConfig.BccEmails[0].Name = "";
+            EmailMessageConfig.BccEmails[0].Address = "";
 
-            Subject = "Test message subject";
-            BodyText = "Test message text";
-        }
-
-        private static void PopulateMessage()
-        {
-            EmailMessageConfig = new EmailMessageConfig
-                                 {
-                                     FromEmail = new EmailRecipient
-                                                 {
-                                                     Name = SenderName,
-                                                     Address = SenderEmail
-                                                 },
-                                     BccEmails = new List<EmailRecipient>
-                                                 {
-                                                     new EmailRecipient
-                                                     {
-                                                         Name = RecipientName,
-                                                         Address = RecipientEmail
-                                                     }
-                                                 },
-                                     Subject = Subject,
-                                     TextBody = BodyText,
-                                     HtmlBody = $"<p>{BodyText}</p>"
-                                 };
+            EmailMessageConfig.Subject = "Test message subject";
+            EmailMessageConfig.TextBody = "Test message text";
+            EmailMessageConfig.HtmlBody = $"<p>{EmailMessageConfig.TextBody}</p>";
         }
 
         private static async Task TestOffice365Client()
@@ -95,8 +74,8 @@ namespace EmailManagerExe
             var emailClientConfig = new EmailClientConfig
                                     {
                                         EmailClientType = EmailClientType.Office365,
-                                        Id = SenderEmail,
-                                        Pwd = SenderPwd
+                                        Id = EmailClientConfig.Id,
+                                        Pwd = EmailClientConfig.Pwd
                                     };
             await using var emailClient = new Office365EmailClient(emailClientConfig);
             await emailClient.SendAsync(EmailMessageConfig);
@@ -107,7 +86,8 @@ namespace EmailManagerExe
             var emailClientConfig = new EmailClientConfig
                                     {
                                         EmailClientType = EmailClientType.Mailgun,
-                                        ApiKey = ApiKey
+                                        MailgunApiKey = EmailClientConfig.MailgunApiKey,
+                                        MailgunDomain = EmailClientConfig.MailgunDomain
                                     };
             var emailClient = new MailgunEmailClient(emailClientConfig);
             await emailClient.SendAsync(EmailMessageConfig);

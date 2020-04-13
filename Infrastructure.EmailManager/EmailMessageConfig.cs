@@ -6,6 +6,7 @@ namespace Infrastructure.EmailManager
     {
         public EmailMessageConfig()
         {
+            FromEmail = new EmailRecipient();
             ToEmails = new List<EmailRecipient>();
             CcEmails = new List<EmailRecipient>();
             BccEmails = new List<EmailRecipient>();
