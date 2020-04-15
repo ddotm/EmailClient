@@ -15,10 +15,10 @@ namespace EmailManagerExe
             EmailClientConfig = new EmailClientConfig();
             EmailMessageConfig = new EmailMessageConfig();
 
-            CollectInput();
-            //HardcodeInput();
+            // CollectInput();
+            HardcodeInput();
 
-            await TestOffice365Client();
+            // await TestOffice365Client();
             await TestMailgunClient();
         }
 
@@ -66,7 +66,7 @@ namespace EmailManagerExe
 
             EmailMessageConfig.Subject = "Test message subject";
             EmailMessageConfig.TextBody = "Test message text";
-            EmailMessageConfig.HtmlBody = $"<p>{EmailMessageConfig.TextBody}</p>";
+            EmailMessageConfig.HtmlBody = $"<html><body><p>{EmailMessageConfig.TextBody}</p></body></html>";
         }
 
         private static async Task TestOffice365Client()
