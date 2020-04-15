@@ -90,7 +90,7 @@ namespace EmailManagerExe
                                         MailgunSendingDomain = EmailClientConfig.MailgunSendingDomain
                                     };
             var emailClient = new MailgunEmailClient(emailClientConfig);
-            await emailClient.SendAsync(EmailMessageConfig);
+            var response = await emailClient.SendAsync(EmailMessageConfig);
         }
     }
 }

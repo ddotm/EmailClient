@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.EmailManager.EmailClients
 {
-    public class MailgunEmailClient : IEmailClient
+    public class MailgunEmailClient : IMailgunEmailClient
     {
-        private RestClient RestClient { get; set; }
         private readonly EmailClientConfig _emailClientConfig;
 
         public MailgunEmailClient(EmailClientConfig emailClientConfig)
@@ -15,7 +14,7 @@ namespace Infrastructure.EmailManager.EmailClients
             _emailClientConfig = emailClientConfig;
         }
 
-        public async Task SendAsync(EmailMessageConfig msg)
+        public async Task<IRestResponse> SendAsync(EmailMessageConfig msg)
         {
             // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
             var client = new RestClient
@@ -71,6 +70,8 @@ namespace Infrastructure.EmailManager.EmailClients
 
             request.Method = Method.POST;
             var response = await client.ExecuteAsync(request);
+
+            return response;
         }
     }
 }
