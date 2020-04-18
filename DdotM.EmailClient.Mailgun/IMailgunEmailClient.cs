@@ -1,7 +1,8 @@
-﻿using RestSharp;
+﻿using DdotM.EmailClient.Common;
+using RestSharp;
 using System.Threading.Tasks;
 
-namespace Infrastructure.EmailManager.EmailClients
+namespace DdotM.EmailClient.Mailgun
 {
     public interface IMailgunEmailClient
     {

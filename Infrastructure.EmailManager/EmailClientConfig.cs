@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.EmailManager
+﻿using DdotM.EmailClient.Common;
+
+namespace Infrastructure.EmailManager
 {
     public class EmailClientConfig
     {

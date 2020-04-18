@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Common
 {
     public static class Base64Helpers
     {

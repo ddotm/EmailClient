@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.EmailManager
+﻿namespace DdotM.EmailClient.Common
 {
     public enum EmailClientType
     {

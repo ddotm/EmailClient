@@ -1,17 +1,18 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DdotM.EmailClient.Common;
+using RestSharp;
 
-namespace Infrastructure.EmailManager.EmailClients
+namespace DdotM.EmailClient.Mailgun
 {
     public class MailgunEmailClient : IMailgunEmailClient
     {
-        private readonly EmailClientConfig _emailClientConfig;
+        private readonly MailgunClientConfig _mailgunClientConfig;
 
-        public MailgunEmailClient(EmailClientConfig emailClientConfig)
+        public MailgunEmailClient(MailgunClientConfig mailgunClientConfig)
         {
-            _emailClientConfig = emailClientConfig;
+            _mailgunClientConfig = mailgunClientConfig;
         }
 
         public async Task<IRestResponse> SendAsync(EmailMessageConfig msg)
@@ -23,10 +24,10 @@ namespace Infrastructure.EmailManager.EmailClients
                          };
 
             var request = new RestRequest();
-            request.AddHeader("Authorization", $"Basic {_emailClientConfig.MailgunApiKey?.Base64Encode()}");
+            request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.MailgunApiKey?.Base64Encode()}");
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            request.AddParameter("domain", _emailClientConfig.MailgunSendingDomain, ParameterType.UrlSegment);
+            request.AddParameter("domain", _mailgunClientConfig.MailgunSendingDomain, ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
 
             request.AddParameter("from", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");

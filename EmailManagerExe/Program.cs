@@ -1,5 +1,6 @@
-﻿using Infrastructure.EmailManager;
-using Infrastructure.EmailManager.EmailClients;
+﻿using DdotM.EmailClient.Common;
+using DdotM.EmailClient.Mailgun;
+using Infrastructure.EmailManager;
 using System;
 using System.Threading.Tasks;
 
@@ -83,9 +84,8 @@ namespace EmailManagerExe
 
         private static async Task TestMailgunClient()
         {
-            var emailClientConfig = new EmailClientConfig
+            var emailClientConfig = new MailgunClientConfig
                                     {
-                                        EmailClientType = EmailClientType.Mailgun,
                                         MailgunApiKey = EmailClientConfig.MailgunApiKey,
                                         MailgunSendingDomain = EmailClientConfig.MailgunSendingDomain
                                     };

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Common
 {
     public class EmailMessageConfig
     {

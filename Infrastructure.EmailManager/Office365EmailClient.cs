@@ -1,13 +1,14 @@
-﻿using MailKit;
+﻿using DdotM.EmailClient.Common;
+using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using System;
 using System.Threading.Tasks;
 
-namespace Infrastructure.EmailManager.EmailClients
+namespace Infrastructure.EmailManager
 {
-    public class Office365EmailClient : IEmailClient, IAsyncDisposable
+    public class Office365EmailClient : IOffice365EmailClient, IAsyncDisposable
     {
         private readonly EmailClientConfig _emailClientConfig;
         private SmtpClient SmtpClient { get; set; }

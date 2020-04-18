@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailManagerExe", "EmailMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EmailManager", "Infrastructure.EmailManager\Infrastructure.EmailManager.csproj", "{24C1CE64-E795-4454-B22A-05BCDB334DAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DdotM.EmailClient.Mailgun", "DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.csproj", "{18B03925-0C0E-4E92-AB68-E548E0325515}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DdotM.EmailClient.Common", "DdotM.EmailClient.Common\DdotM.EmailClient.Common.csproj", "{B65E7B18-9E64-46FB-91CB-23A62307142C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,14 @@ Global
 		{24C1CE64-E795-4454-B22A-05BCDB334DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24C1CE64-E795-4454-B22A-05BCDB334DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24C1CE64-E795-4454-B22A-05BCDB334DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18B03925-0C0E-4E92-AB68-E548E0325515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18B03925-0C0E-4E92-AB68-E548E0325515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18B03925-0C0E-4E92-AB68-E548E0325515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18B03925-0C0E-4E92-AB68-E548E0325515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B65E7B18-9E64-46FB-91CB-23A62307142C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B65E7B18-9E64-46FB-91CB-23A62307142C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B65E7B18-9E64-46FB-91CB-23A62307142C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B65E7B18-9E64-46FB-91CB-23A62307142C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
