@@ -1,6 +1,6 @@
 ﻿using MimeKit;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Office365
 {
     public static class EmailComposer
     {

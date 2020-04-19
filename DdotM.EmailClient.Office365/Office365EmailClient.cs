@@ -1,26 +1,26 @@
-﻿using DdotM.EmailClient.Common;
+﻿using System;
+using System.Threading.Tasks;
+using DdotM.EmailClient.Common;
 using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using System;
-using System.Threading.Tasks;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Office365
 {
     public class Office365EmailClient : IOffice365EmailClient, IAsyncDisposable
     {
-        private readonly EmailClientConfig _emailClientConfig;
+        private readonly Office365ClientConfig _office365ClientConfig;
         private SmtpClient SmtpClient { get; set; }
 
-        public Office365EmailClient(EmailClientConfig emailClientConfig)
+        public Office365EmailClient(Office365ClientConfig office365ClientConfig)
         {
-            _emailClientConfig = emailClientConfig;
+            _office365ClientConfig = office365ClientConfig;
         }
 
         public async Task SendAsync(EmailMessageConfig emailMessageConfig)
         {
-            SmtpClient = await Office365SmtpClientAsync(_emailClientConfig.Id, _emailClientConfig.Pwd);
+            SmtpClient = await Office365SmtpClientAsync(_office365ClientConfig.Id, _office365ClientConfig.Pwd);
 
             var message = new MimeMessage();
 

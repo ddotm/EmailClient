@@ -1,7 +1,7 @@
-﻿using DdotM.EmailClient.Common;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using DdotM.EmailClient.Common;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Office365
 {
     public interface IOffice365EmailClient
     {

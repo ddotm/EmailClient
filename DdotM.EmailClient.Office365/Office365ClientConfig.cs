@@ -1,10 +1,10 @@
 ﻿using DdotM.EmailClient.Common;
 
-namespace Infrastructure.EmailManager
+namespace DdotM.EmailClient.Office365
 {
-    public class EmailClientConfig
+    public class Office365ClientConfig
     {
-        public EmailClientConfig()
+        public Office365ClientConfig()
         {
         }
 

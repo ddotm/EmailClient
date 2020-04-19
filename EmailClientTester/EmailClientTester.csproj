@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DdotM.EmailClient.Common\DdotM.EmailClient.Common.csproj" />
     <ProjectReference Include="..\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.csproj" />
-    <ProjectReference Include="..\Infrastructure.EmailManager\Infrastructure.EmailManager.csproj" />
+    <ProjectReference Include="..\DdotM.EmailClient.Office365\DdotM.EmailClient.Office365.csproj" />
   </ItemGroup>
 
 </Project>
