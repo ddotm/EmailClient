@@ -11,14 +11,15 @@ namespace DdotM.EmailClient.Common
             CcEmails = new List<EmailRecipient>();
             BccEmails = new List<EmailRecipient>();
         }
-        public EmailRecipient FromEmail { get; set; }
 
-        public List<EmailRecipient> ToEmails { get; set; }
-        public List<EmailRecipient> CcEmails { get; set; }
-        public List<EmailRecipient> BccEmails { get; set; }
+        public EmailRecipient FromEmail { get; }
+
+        public List<EmailRecipient> ToEmails { get; }
+        public List<EmailRecipient> CcEmails { get; }
+        public List<EmailRecipient> BccEmails { get; }
 
         public string Subject { get; set; }
-        public string HtmlBody { get; set; }
         public string TextBody { get; set; }
+        public string HtmlBody { get; set; }
     }
 }
