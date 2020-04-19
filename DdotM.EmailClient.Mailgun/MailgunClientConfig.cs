@@ -2,7 +2,7 @@
 {
     public class MailgunClientConfig
     {
-        public string MailgunApiKey { get; set; }
-        public string MailgunSendingDomain { get; set; }
+        public string ApiKey { get; set; }
+        public string SendingDomain { get; set; }
     }
 }

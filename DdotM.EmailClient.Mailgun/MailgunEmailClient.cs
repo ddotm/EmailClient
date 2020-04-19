@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DdotM.EmailClient.Common;
+using RestSharp;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DdotM.EmailClient.Common;
-using RestSharp;
 
 namespace DdotM.EmailClient.Mailgun
 {
@@ -15,7 +15,7 @@ namespace DdotM.EmailClient.Mailgun
             _mailgunClientConfig = mailgunClientConfig;
         }
 
-        public async Task<IRestResponse> SendAsync(EmailMessageConfig msg)
+        public async Task<IRestResponse> SendAsync(MailgunMessageConfig msg)
         {
             // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
             var client = new RestClient
@@ -24,22 +24,19 @@ namespace DdotM.EmailClient.Mailgun
                          };
 
             var request = new RestRequest();
-            request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.MailgunApiKey?.Base64Encode()}");
+            request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.ApiKey?.Base64Encode()}");
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            request.AddParameter("domain", _mailgunClientConfig.MailgunSendingDomain, ParameterType.UrlSegment);
+            request.AddParameter("domain", _mailgunClientConfig.SendingDomain, ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
 
             request.AddParameter("from", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
 
-            if (msg.ToEmails.Any())
+            foreach (var toRecipient in msg.ToEmails)
             {
-                foreach (var toRecipient in msg.ToEmails)
-                {
-                    request.AddParameter("to", $"{toRecipient.Name} <{toRecipient.Address}>");
-                }
+                request.AddParameter("to", $"{toRecipient.Name} <{toRecipient.Address}>");
             }
-            else
+            if (!msg.ToEmails.Any())
             {
                 request.AddParameter("to", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
             }

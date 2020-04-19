@@ -1,6 +1,7 @@
 ﻿using DdotM.EmailClient.Common;
 using DdotM.EmailClient.Mailgun;
 using DdotM.EmailClient.Office365;
+using RestSharp;
 using System;
 using System.Threading.Tasks;
 
@@ -9,21 +10,29 @@ namespace EmailClientTester
     internal static class Program
     {
         private static EmailMessageConfig EmailMessageConfig { get; set; }
+        private static MailgunMessageConfig MailgunMessageConfig { get; set; }
         private static Office365ClientConfig Office365ClientConfig { get; set; }
+        private static MailgunClientConfig MailgunClientConfig { get; set; }
 
         private static async Task Main(string[] args)
         {
             Office365ClientConfig = new Office365ClientConfig();
-            EmailMessageConfig = new EmailMessageConfig();
+            MailgunClientConfig = new MailgunClientConfig();
 
-            // CollectInput();
-            HardcodeInput();
+            MailgunMessageConfig = new MailgunMessageConfig();
+
+            // CollectInputForOffice365Email();
+            // HardcodeInputForOffice365();
+
+            // CollectInputForMailgunEmail();
+            HardcodeInputForMailgun();
 
             // await TestOffice365Client();
-            await TestMailgunClient();
+            var response = await TestMailgunClient();
+            Console.WriteLine($"Email sent with response code {response.StatusCode}");
         }
 
-        private static void CollectInput()
+        private static void CollectInputForOffice365Email()
         {
             Console.WriteLine($"Sender name: ");
             EmailMessageConfig.FromEmail.Name = Console.ReadLine();
@@ -32,11 +41,6 @@ namespace EmailClientTester
             Console.WriteLine($"Sender password (for {EmailMessageConfig.FromEmail.Address})");
             Office365ClientConfig.Id = EmailMessageConfig.FromEmail.Address;
             Office365ClientConfig.Pwd = Console.ReadLine();
-
-            Console.WriteLine($"Mailgun API key:");
-            Office365ClientConfig.MailgunApiKey = Console.ReadLine();
-            Console.WriteLine($"Mailgun sending domain:");
-            Office365ClientConfig.MailgunSendingDomain = Console.ReadLine();
 
             EmailMessageConfig.BccEmails.Add(new EmailRecipient());
             Console.WriteLine($"Name of recipient:");
@@ -51,30 +55,73 @@ namespace EmailClientTester
             Console.Clear();
         }
 
-        private static void HardcodeInput()
+        private static void CollectInputForMailgunEmail()
+        {
+            Console.WriteLine($"Sender name: ");
+            MailgunMessageConfig.FromEmail.Name = Console.ReadLine();
+            Console.WriteLine($"Sender email address: ");
+            MailgunMessageConfig.FromEmail.Address = Console.ReadLine();
+
+            Console.WriteLine($"Mailgun API key:");
+            MailgunClientConfig.ApiKey = Console.ReadLine();
+            Console.WriteLine($"Mailgun sending domain:");
+            MailgunClientConfig.SendingDomain = Console.ReadLine();
+
+            MailgunMessageConfig.BccEmails.Add(new EmailRecipient());
+            Console.WriteLine($"Name of recipient:");
+            MailgunMessageConfig.BccEmails[0].Name = Console.ReadLine();
+            Console.WriteLine($"Recipient email address:");
+            MailgunMessageConfig.BccEmails[0].Address = Console.ReadLine();
+
+            Console.WriteLine($"Email subject:");
+            MailgunMessageConfig.Subject = Console.ReadLine();
+            Console.WriteLine($"Email text:");
+            MailgunMessageConfig.TextBody = Console.ReadLine();
+            Console.Clear();
+        }
+
+        private static void HardcodeInputForOffice365()
         {
             EmailMessageConfig.FromEmail.Name = "";
             EmailMessageConfig.FromEmail.Address = "";
+
             Office365ClientConfig.Id = EmailMessageConfig.FromEmail.Address;
             Office365ClientConfig.Pwd = "";
 
-            Office365ClientConfig.MailgunApiKey = "";
-            Office365ClientConfig.MailgunSendingDomain = "";
-
-            EmailMessageConfig.BccEmails.Add(new EmailRecipient());
-            EmailMessageConfig.BccEmails[0].Name = "";
-            EmailMessageConfig.BccEmails[0].Address = "";
+            EmailMessageConfig.BccEmails.Add(new EmailRecipient
+                                             {
+                                                 Name = "",
+                                                 Address = ""
+                                             });
 
             EmailMessageConfig.Subject = "Test message subject";
             EmailMessageConfig.TextBody = "Test message text";
             EmailMessageConfig.HtmlBody = $"<html><body><p>{EmailMessageConfig.TextBody}</p></body></html>";
         }
 
+        private static void HardcodeInputForMailgun()
+        {
+            MailgunMessageConfig.FromEmail.Name = "";
+            MailgunMessageConfig.FromEmail.Address = "";
+
+            MailgunClientConfig.ApiKey = "";
+            MailgunClientConfig.SendingDomain = "";
+
+            MailgunMessageConfig.BccEmails.Add(new EmailRecipient
+                                               {
+                                                   Name = "",
+                                                   Address = ""
+                                               });
+
+            MailgunMessageConfig.Subject = "Test message subject";
+            MailgunMessageConfig.TextBody = "Test message text";
+            MailgunMessageConfig.HtmlBody = $"<html><body><p>{MailgunMessageConfig.TextBody}</p></body></html>";
+        }
+
         private static async Task TestOffice365Client()
         {
             var emailClientConfig = new Office365ClientConfig
                                     {
-                                        EmailClientType = EmailClientType.Office365,
                                         Id = Office365ClientConfig.Id,
                                         Pwd = Office365ClientConfig.Pwd
                                     };
@@ -82,15 +129,16 @@ namespace EmailClientTester
             await emailClient.SendAsync(EmailMessageConfig);
         }
 
-        private static async Task TestMailgunClient()
+        private static async Task<IRestResponse> TestMailgunClient()
         {
-            var emailClientConfig = new MailgunClientConfig
-                                    {
-                                        MailgunApiKey = Office365ClientConfig.MailgunApiKey,
-                                        MailgunSendingDomain = Office365ClientConfig.MailgunSendingDomain
-                                    };
-            var emailClient = new MailgunEmailClient(emailClientConfig);
-            var response = await emailClient.SendAsync(EmailMessageConfig);
+            var mailgunClientConfig = new MailgunClientConfig
+                                      {
+                                          ApiKey = MailgunClientConfig.ApiKey,
+                                          SendingDomain = MailgunClientConfig.SendingDomain
+                                      };
+            var emailClient = new MailgunEmailClient(mailgunClientConfig);
+            var response = await emailClient.SendAsync(MailgunMessageConfig);
+            return response;
         }
     }
 }
