@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageTags>email, mailgun client</PackageTags>
+    <PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
+    <Company>Lilipudra</Company>
+    <Authors>Dmitri Mogilevski</Authors>
+    <RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>Email client for sending email messages through Mailgun.</Description>
   </PropertyGroup>
 
   <ItemGroup>
