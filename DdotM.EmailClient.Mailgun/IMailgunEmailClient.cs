@@ -5,6 +5,6 @@ namespace DdotM.EmailClient.Mailgun
 {
     public interface IMailgunEmailClient
     {
-        Task<IRestResponse> SendAsync(MailgunMessageConfig msg);
+        Task<IRestResponse> SendAsync(MailgunMessage msg);
     }
 }

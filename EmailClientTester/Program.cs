@@ -10,7 +10,7 @@ namespace EmailClientTester
     internal static class Program
     {
         private static EmailMessageConfig EmailMessageConfig { get; set; }
-        private static MailgunMessageConfig MailgunMessageConfig { get; set; }
+        private static MailgunMessage MailgunMessage { get; set; }
         private static Office365ClientConfig Office365ClientConfig { get; set; }
         private static MailgunClientConfig MailgunClientConfig { get; set; }
 
@@ -19,7 +19,7 @@ namespace EmailClientTester
             Office365ClientConfig = new Office365ClientConfig();
             MailgunClientConfig = new MailgunClientConfig();
 
-            MailgunMessageConfig = new MailgunMessageConfig();
+            MailgunMessage = new MailgunMessage();
 
             // CollectInputForOffice365Email();
             // HardcodeInputForOffice365();
@@ -58,25 +58,25 @@ namespace EmailClientTester
         private static void CollectInputForMailgunEmail()
         {
             Console.WriteLine($"Sender name: ");
-            MailgunMessageConfig.FromEmail.Name = Console.ReadLine();
+            MailgunMessage.FromEmail.Name = Console.ReadLine();
             Console.WriteLine($"Sender email address: ");
-            MailgunMessageConfig.FromEmail.Address = Console.ReadLine();
+            MailgunMessage.FromEmail.Address = Console.ReadLine();
 
             Console.WriteLine($"Mailgun API key:");
             MailgunClientConfig.ApiKey = Console.ReadLine();
             Console.WriteLine($"Mailgun sending domain:");
             MailgunClientConfig.SendingDomain = Console.ReadLine();
 
-            MailgunMessageConfig.BccEmails.Add(new EmailRecipient());
+            MailgunMessage.BccEmails.Add(new EmailRecipient());
             Console.WriteLine($"Name of recipient:");
-            MailgunMessageConfig.BccEmails[0].Name = Console.ReadLine();
+            MailgunMessage.BccEmails[0].Name = Console.ReadLine();
             Console.WriteLine($"Recipient email address:");
-            MailgunMessageConfig.BccEmails[0].Address = Console.ReadLine();
+            MailgunMessage.BccEmails[0].Address = Console.ReadLine();
 
             Console.WriteLine($"Email subject:");
-            MailgunMessageConfig.Subject = Console.ReadLine();
+            MailgunMessage.Subject = Console.ReadLine();
             Console.WriteLine($"Email text:");
-            MailgunMessageConfig.TextBody = Console.ReadLine();
+            MailgunMessage.TextBody = Console.ReadLine();
             Console.Clear();
         }
 
@@ -101,21 +101,25 @@ namespace EmailClientTester
 
         private static void HardcodeInputForMailgun()
         {
-            MailgunMessageConfig.FromEmail.Name = "";
-            MailgunMessageConfig.FromEmail.Address = "";
-
             MailgunClientConfig.ApiKey = "";
             MailgunClientConfig.SendingDomain = "";
+            MailgunClientConfig.RequireTls = true;
+            MailgunClientConfig.SkipVerification = false;
 
-            MailgunMessageConfig.BccEmails.Add(new EmailRecipient
-                                               {
-                                                   Name = "",
-                                                   Address = ""
-                                               });
+            MailgunMessage.FromEmail.Name = "";
+            MailgunMessage.FromEmail.Address = "";
 
-            MailgunMessageConfig.Subject = "Test message subject";
-            MailgunMessageConfig.TextBody = "Test message text";
-            MailgunMessageConfig.HtmlBody = $"<html><body><p>{MailgunMessageConfig.TextBody}</p></body></html>";
+            MailgunMessage.BccEmails.Add(new EmailRecipient
+                                         {
+                                             Name = "",
+                                             Address = ""
+                                         });
+
+            MailgunMessage.Subject = "Test message subject";
+            MailgunMessage.TextBody = "Test message text";
+            MailgunMessage.HtmlBody = $"<html><body><p>{MailgunMessage.TextBody}</p></body></html>";
+
+            MailgunMessage.Tags.Add("registration");
         }
 
         private static async Task TestOffice365Client()
@@ -137,7 +141,7 @@ namespace EmailClientTester
                                           SendingDomain = MailgunClientConfig.SendingDomain
                                       };
             var emailClient = new MailgunEmailClient(mailgunClientConfig);
-            var response = await emailClient.SendAsync(MailgunMessageConfig);
+            var response = await emailClient.SendAsync(MailgunMessage);
             return response;
         }
     }

@@ -15,7 +15,7 @@ namespace DdotM.EmailClient.Mailgun
             _mailgunClientConfig = mailgunClientConfig;
         }
 
-        public async Task<IRestResponse> SendAsync(MailgunMessageConfig msg)
+        public async Task<IRestResponse> SendAsync(MailgunMessage msg)
         {
             // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
             var client = new RestClient
@@ -29,6 +29,9 @@ namespace DdotM.EmailClient.Mailgun
 
             request.AddParameter("domain", _mailgunClientConfig.SendingDomain, ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
+            // Send a message with custom connection settings
+            request.AddParameter("o:require-tls", _mailgunClientConfig.RequireTls);
+            request.AddParameter("o:skip-verification", _mailgunClientConfig.SkipVerification);
 
             request.AddParameter("from", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
 
@@ -36,6 +39,7 @@ namespace DdotM.EmailClient.Mailgun
             {
                 request.AddParameter("to", $"{toRecipient.Name} <{toRecipient.Address}>");
             }
+
             if (!msg.ToEmails.Any())
             {
                 request.AddParameter("to", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
@@ -56,15 +60,15 @@ namespace DdotM.EmailClient.Mailgun
             request.AddParameter("html", msg.HtmlBody);
 
             // This will disable link rewriting for this message
-            request.AddParameter("o:tracking", true);
+            request.AddParameter("o:tracking", msg.Tracking);
             // Set message delivery time - format "Fri, 14 Oct 2011 23:10:10 -0000"
             // request.AddParameter("o:deliverytime", "Fri, 14 Oct 2011 23:10:10 -0000");
+            
             // Add tag(s)
-            request.AddParameter("o:tag", "registration");
-
-            // Send a message with custom connection settings
-            request.AddParameter("o:require-tls", true);
-            request.AddParameter("o:skip-verification", false);
+            foreach (var tag in msg.Tags)
+            {
+                request.AddParameter("o:tag", tag);
+            }
 
             request.Method = Method.POST;
             var response = await client.ExecuteAsync(request);
