@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Mailgun
 {
-    public class MailgunEmailClient : IMailgunEmailClient
+    public class MailgunClient : IMailgunClient
     {
         private readonly MailgunClientConfig _mailgunClientConfig;
 
-        public MailgunEmailClient(MailgunClientConfig mailgunClientConfig)
+        public MailgunClient(MailgunClientConfig mailgunClientConfig)
         {
             _mailgunClientConfig = mailgunClientConfig;
         }

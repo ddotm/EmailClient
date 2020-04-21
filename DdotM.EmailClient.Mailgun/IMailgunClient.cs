@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Mailgun
 {
-    public interface IMailgunEmailClient
+    public interface IMailgunClient
     {
         Task<IRestResponse> SendAsync(MailgunMessage msg);
     }

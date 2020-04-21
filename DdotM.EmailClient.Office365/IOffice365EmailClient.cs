@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using DdotM.EmailClient.Common;
+﻿using DdotM.EmailClient.Common;
+using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Office365
 {
     public interface IOffice365EmailClient
     {
-        Task SendAsync(EmailMessageConfig emailMessageConfig);
+        Task SendAsync(EmailMessage emailMessage);
     }
 }

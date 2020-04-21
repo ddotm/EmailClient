@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using DdotM.EmailClient.Common;
+﻿using DdotM.EmailClient.Common;
 using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using System;
+using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Office365
 {
@@ -18,34 +18,34 @@ namespace DdotM.EmailClient.Office365
             _office365ClientConfig = office365ClientConfig;
         }
 
-        public async Task SendAsync(EmailMessageConfig emailMessageConfig)
+        public async Task SendAsync(EmailMessage emailMessage)
         {
             SmtpClient = await Office365SmtpClientAsync(_office365ClientConfig.Id, _office365ClientConfig.Pwd);
 
             var message = new MimeMessage();
 
-            EmailComposer.AddFromAddress(message, emailMessageConfig.FromEmail.Name, emailMessageConfig.FromEmail.Address);
-            foreach (var emailAddress in emailMessageConfig.ToEmails)
+            EmailComposer.AddFromAddress(message, emailMessage.FromEmail.Name, emailMessage.FromEmail.Address);
+            foreach (var emailAddress in emailMessage.ToEmails)
             {
                 EmailComposer.AddToAddress(message, emailAddress.Name, emailAddress.Address);
             }
 
-            foreach (var emailAddress in emailMessageConfig.CcEmails)
+            foreach (var emailAddress in emailMessage.CcEmails)
             {
                 EmailComposer.AddCcAddress(message, emailAddress.Name, emailAddress.Address);
             }
 
-            foreach (var emailAddress in emailMessageConfig.BccEmails)
+            foreach (var emailAddress in emailMessage.BccEmails)
             {
                 EmailComposer.AddBccAddress(message, emailAddress.Name, emailAddress.Address);
             }
 
-            message.Subject = emailMessageConfig.Subject;
+            message.Subject = emailMessage.Subject;
 
             var bodyBuilder = new BodyBuilder
                               {
-                                  HtmlBody = emailMessageConfig.HtmlBody,
-                                  TextBody = emailMessageConfig.TextBody
+                                  HtmlBody = emailMessage.HtmlBody,
+                                  TextBody = emailMessage.TextBody
                               };
 
             message.Body = bodyBuilder.ToMessageBody();
@@ -56,7 +56,7 @@ namespace DdotM.EmailClient.Office365
         private static async Task<SmtpClient> Office365SmtpClientAsync(string user, string pwd)
         {
             var client = new SmtpClient();
-            client.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+            await client.ConnectAsync("smtp.office365.com", 587, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(user, pwd);
 
             return client;

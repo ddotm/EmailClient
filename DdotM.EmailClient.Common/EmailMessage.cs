@@ -2,9 +2,9 @@
 
 namespace DdotM.EmailClient.Common
 {
-    public class EmailMessageConfig
+    public class EmailMessage
     {
-        public EmailMessageConfig()
+        protected EmailMessage()
         {
             FromEmail = new EmailRecipient();
             ToEmails = new List<EmailRecipient>();
