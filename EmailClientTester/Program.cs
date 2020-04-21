@@ -17,8 +17,9 @@ namespace EmailClientTester
         private static async Task Main(string[] args)
         {
             Office365ClientConfig = new Office365ClientConfig();
-            MailgunClientConfig = new MailgunClientConfig();
+            EmailMessage = new EmailMessage();
 
+            MailgunClientConfig = new MailgunClientConfig();
             MailgunMessage = new MailgunMessage();
 
             // CollectInputForOffice365Email();
