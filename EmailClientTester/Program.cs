@@ -121,6 +121,8 @@ namespace EmailClientTester
             MailgunMessage.HtmlBody = $"<html><body><p>{MailgunMessage.TextBody}</p></body></html>";
 
             MailgunMessage.Tags.Add("registration");
+            MailgunMessage.Tracking = false;
+            MailgunMessage.DeliveryTime = DateTime.Now;
         }
 
         private static async Task TestOffice365Client()
