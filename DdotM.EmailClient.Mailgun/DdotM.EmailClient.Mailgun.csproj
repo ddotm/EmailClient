@@ -8,7 +8,16 @@
     <Authors>Dmitri Mogilevski</Authors>
     <RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>Email client for sending email messages through Mailgun.</Description>
+    <Description>Client library for sending email messages through Mailgun.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +26,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DdotM.EmailClient.Common\DdotM.EmailClient.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

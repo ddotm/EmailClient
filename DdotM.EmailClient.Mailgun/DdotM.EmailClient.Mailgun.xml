@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DdotM.EmailClient.Mailgun</name>
+    </assembly>
+    <members>
+        <member name="T:DdotM.EmailClient.Mailgun.IMailgunClient">
+            <summary>
+            Mailgun client
+            </summary>
+        </member>
+        <member name="M:DdotM.EmailClient.Mailgun.IMailgunClient.SendAsync(DdotM.EmailClient.Mailgun.MailgunMessage)">
+            <summary>
+            Sends an email message through Mailgun
+            </summary>
+            <param name="msg">Message to send</param>
+            <returns></returns>
+        </member>
+        <member name="T:DdotM.EmailClient.Mailgun.MailgunClient">
+            <inheritdoc />
+        </member>
+        <member name="M:DdotM.EmailClient.Mailgun.MailgunClient.#ctor(DdotM.EmailClient.Mailgun.MailgunClientConfig)">
+            <summary>
+            Constructor. Initializes the instance with the passed in MailgunClientConfig
+            </summary>
+            <param name="mailgunClientConfig">Mailgun client configurations</param>
+        </member>
+        <member name="M:DdotM.EmailClient.Mailgun.MailgunClient.SendAsync(DdotM.EmailClient.Mailgun.MailgunMessage)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Mailgun
 {
+    /// <inheritdoc />
     public class MailgunClient : IMailgunClient
     {
         private readonly MailgunClientConfig _mailgunClientConfig;
 
+        /// <summary>
+        /// Constructor. Initializes the instance with the passed in MailgunClientConfig
+        /// </summary>
+        /// <param name="mailgunClientConfig">Mailgun client configurations</param>
         public MailgunClient(MailgunClientConfig mailgunClientConfig)
         {
             _mailgunClientConfig = mailgunClientConfig;
         }
 
+        /// <inheritdoc />
         public async Task<IRestResponse> SendAsync(MailgunMessage msg)
         {
             // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
