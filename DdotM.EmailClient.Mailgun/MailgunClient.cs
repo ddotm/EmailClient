@@ -21,7 +21,7 @@ namespace DdotM.EmailClient.Mailgun
         }
 
         /// <inheritdoc />
-        public async Task<IRestResponse> SendAsync(MailgunMessage msg)
+        public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
         {
             // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
             var client = new RestClient
@@ -68,8 +68,11 @@ namespace DdotM.EmailClient.Mailgun
             // This will disable link rewriting for this message
             request.AddParameter("o:tracking", msg.Tracking);
             // Set message delivery time - format "Fri, 14 Oct 2011 23:10:10 -0000"
-            // request.AddParameter("o:deliverytime", "Fri, 14 Oct 2011 23:10:10 -0000");
-            
+            if (msg.DeliveryTime.HasValue)
+            {
+                request.AddParameter("o:deliverytime", msg.DeliveryTime.Value.ToString("ddd, dd MMM yyyy HH:mm:ss -0000"));
+            }
+
             // Add tag(s)
             foreach (var tag in msg.Tags)
             {
@@ -79,7 +82,9 @@ namespace DdotM.EmailClient.Mailgun
             request.Method = Method.POST;
             var response = await client.ExecuteAsync(request);
 
-            return response;
+            msg.Response = response;
+
+            return msg;
         }
     }
 }

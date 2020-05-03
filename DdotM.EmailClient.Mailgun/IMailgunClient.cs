@@ -1,5 +1,4 @@
-﻿using RestSharp;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Mailgun
 {
@@ -13,6 +12,6 @@ namespace DdotM.EmailClient.Mailgun
         /// </summary>
         /// <param name="msg">Message to send</param>
         /// <returns></returns>
-        Task<IRestResponse> SendAsync(MailgunMessage msg);
+        Task<MailgunMessage> SendAsync(MailgunMessage msg);
     }
 }

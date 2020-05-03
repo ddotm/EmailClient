@@ -1,7 +1,6 @@
 ﻿using DdotM.EmailClient.Common;
 using DdotM.EmailClient.Mailgun;
 using DdotM.EmailClient.Office365;
-using RestSharp;
 using System;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace EmailClientTester
 
             // await TestOffice365Client();
             var response = await TestMailgunClient();
-            Console.WriteLine($"Email sent with response code {response.StatusCode}");
+            Console.WriteLine($"Email sent with response code {response.Response.StatusCode}");
         }
 
         private static void CollectInputForOffice365Email()
@@ -136,7 +135,7 @@ namespace EmailClientTester
             await office365Client.SendAsync(EmailMessage);
         }
 
-        private static async Task<IRestResponse> TestMailgunClient()
+        private static async Task<MailgunMessage> TestMailgunClient()
         {
             var mailgunClientConfig = new MailgunClientConfig
                                       {

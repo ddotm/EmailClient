@@ -1,4 +1,5 @@
 ﻿using DdotM.EmailClient.Common;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 
@@ -15,5 +16,7 @@ namespace DdotM.EmailClient.Mailgun
         public DateTime? DeliveryTime { get; set; }
         public List<string> Tags { get; set; }
         public bool Tracking { get; set; } = false;
+
+        public IRestResponse Response { get; set; }
     }
 }
