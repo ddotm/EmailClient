@@ -5,11 +5,17 @@
     /// </summary>
     public class MailgunClientConfig
     {
+        private string _apiKey;
+
         /// <summary>
         /// Mailgun API key. Private key from https://app.mailgun.com/app/account/security/api_keys
-        /// with 'api:' prefix
         /// </summary>
-        public string ApiKey { get; set; }
+        public string ApiKey
+        {
+            get => _apiKey;
+            set => _apiKey = $"api:{value}";
+        }
+
         /// <summary>
         /// Mailgun sending domain
         /// </summary>
