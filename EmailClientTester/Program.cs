@@ -127,10 +127,10 @@ namespace EmailClientTester
         private static async Task TestOffice365Client()
         {
             var office365ClientConfig = new Office365ClientConfig
-                                    {
-                                        Id = Office365ClientConfig.Id,
-                                        Pwd = Office365ClientConfig.Pwd
-                                    };
+                                        {
+                                            Id = Office365ClientConfig.Id,
+                                            Pwd = Office365ClientConfig.Pwd
+                                        };
             await using var office365Client = new Office365EmailClient(office365ClientConfig);
             await office365Client.SendAsync(EmailMessage);
         }
@@ -140,7 +140,9 @@ namespace EmailClientTester
             var mailgunClientConfig = new MailgunClientConfig
                                       {
                                           ApiKey = MailgunClientConfig.ApiKey,
-                                          SendingDomain = MailgunClientConfig.SendingDomain
+                                          SendingDomain = MailgunClientConfig.SendingDomain,
+                                          RequireTls = true,
+                                          SkipVerification = false
                                       };
             var mailgunClient = new MailgunClient(mailgunClientConfig);
             var response = await mailgunClient.SendAsync(MailgunMessage);

@@ -14,7 +14,9 @@ public async Task<IRestResponse> SendMailgunEmail()
     var mailgunClientConfig = new MailgunClientConfig
                                     {
                                         ApiKey = "MAILGUN_API_KEY",
-                                        SendingDomain = "MAILGUN_SENDING_DOMAIN"
+                                        SendingDomain = "MAILGUN_SENDING_DOMAIN",
+                                        RequireTls = true,
+                                        SkipVerification = false
                                     };
     var mailgunClient = new MailgunClient(mailgunClientConfig);
     var mailgunMessage = new MailgunMessage();
