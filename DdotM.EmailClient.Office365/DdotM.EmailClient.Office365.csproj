@@ -8,8 +8,4 @@
     <PackageReference Include="MailKit" Version="2.6.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DdotM.EmailClient.Common\DdotM.EmailClient.Common.csproj" />
-  </ItemGroup>
-
 </Project>

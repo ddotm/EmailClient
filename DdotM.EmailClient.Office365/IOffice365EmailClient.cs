@@ -1,5 +1,4 @@
-﻿using DdotM.EmailClient.Common;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DdotM.EmailClient.Office365
 {

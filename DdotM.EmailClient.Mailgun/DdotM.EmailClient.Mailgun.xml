@@ -4,6 +4,25 @@
         <name>DdotM.EmailClient.Mailgun</name>
     </assembly>
     <members>
+        <member name="T:DdotM.EmailClient.Mailgun.Base64Helpers">
+            <summary>
+            Base64 converter utility class
+            </summary>
+        </member>
+        <member name="M:DdotM.EmailClient.Mailgun.Base64Helpers.Base64Encode(System.String)">
+            <summary>
+            Encodes string to Base64
+            </summary>
+            <param name="plainText">Plain text to be converted to Base64</param>
+            <returns>Base64 encoded string</returns>
+        </member>
+        <member name="M:DdotM.EmailClient.Mailgun.Base64Helpers.Base64Decode(System.String)">
+            <summary>
+            Decodes string to Base64
+            </summary>
+            <param name="base64EncodedData">Base64 encoded string to be decoded to plain text</param>
+            <returns>Plain text string</returns>
+        </member>
         <member name="T:DdotM.EmailClient.Mailgun.IMailgunClient">
             <summary>
             Mailgun client
@@ -68,6 +87,41 @@
             Default constructor
             </summary>
         </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.From">
+            <summary>
+            Email sender
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.ToEmails">
+            <summary>
+            List of the To email recipients
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.CcEmails">
+            <summary>
+            List of the Cc email recipients
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.BccEmails">
+            <summary>
+            List of the Bcc email recipients
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.Subject">
+            <summary>
+            Email subject
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.TextBody">
+            <summary>
+            Email contents in text format
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.HtmlBody">
+            <summary>
+            Email contents in HTML format
+            </summary>
+        </member>
         <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.DeliveryTime">
             <summary>
             Message delivery time.
@@ -88,6 +142,21 @@
         <member name="P:DdotM.EmailClient.Mailgun.MailgunMessage.Response">
             <summary>
             Once the message send is attempted, Response will contain the Mailgun HTTP response data
+            </summary>
+        </member>
+        <member name="T:DdotM.EmailClient.Mailgun.Recipient">
+            <summary>
+            Email recipient
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.Recipient.Name">
+            <summary>
+            Email recipient name
+            </summary>
+        </member>
+        <member name="P:DdotM.EmailClient.Mailgun.Recipient.Address">
+            <summary>
+            Email recipient email address
             </summary>
         </member>
     </members>

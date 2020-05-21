@@ -1,5 +1,4 @@
-﻿using DdotM.EmailClient.Common;
-using RestSharp;
+﻿using RestSharp;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +38,7 @@ namespace DdotM.EmailClient.Mailgun
             request.AddParameter("o:require-tls", _mailgunClientConfig.RequireTls);
             request.AddParameter("o:skip-verification", _mailgunClientConfig.SkipVerification);
 
-            request.AddParameter("from", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
+            request.AddParameter("from", $"{msg.From.Name} <{msg.From.Address}>");
 
             foreach (var toRecipient in msg.ToEmails)
             {
@@ -48,7 +47,7 @@ namespace DdotM.EmailClient.Mailgun
 
             if (!msg.ToEmails.Any())
             {
-                request.AddParameter("to", $"{msg.FromEmail.Name} <{msg.FromEmail.Address}>");
+                request.AddParameter("to", $"{msg.From.Name} <{msg.From.Address}>");
             }
 
             foreach (var ccRecipient in msg.CcEmails)

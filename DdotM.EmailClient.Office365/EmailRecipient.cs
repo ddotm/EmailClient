@@ -1,4 +1,4 @@
-﻿namespace DdotM.EmailClient.Common
+﻿namespace DdotM.EmailClient.Office365
 {
     public class EmailRecipient
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DdotM.EmailClient.Common
+namespace DdotM.EmailClient.Office365
 {
     public class EmailMessage
     {

@@ -1,5 +1,4 @@
-﻿using DdotM.EmailClient.Common;
-using MailKit;
+﻿using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;

@@ -1,8 +1,8 @@
-﻿using DdotM.EmailClient.Common;
-using DdotM.EmailClient.Mailgun;
+﻿using DdotM.EmailClient.Mailgun;
 using DdotM.EmailClient.Office365;
 using System;
 using System.Threading.Tasks;
+using EmailMessage = DdotM.EmailClient.Office365.EmailMessage;
 
 namespace EmailClientTester
 {
@@ -58,16 +58,16 @@ namespace EmailClientTester
         private static void CollectInputForMailgunEmail()
         {
             Console.WriteLine($"Sender name: ");
-            MailgunMessage.FromEmail.Name = Console.ReadLine();
+            MailgunMessage.From.Name = Console.ReadLine();
             Console.WriteLine($"Sender email address: ");
-            MailgunMessage.FromEmail.Address = Console.ReadLine();
+            MailgunMessage.From.Address = Console.ReadLine();
 
             Console.WriteLine($"Mailgun API key:");
             MailgunClientConfig.ApiKey = Console.ReadLine();
             Console.WriteLine($"Mailgun sending domain:");
             MailgunClientConfig.SendingDomain = Console.ReadLine();
 
-            MailgunMessage.BccEmails.Add(new EmailRecipient());
+            MailgunMessage.BccEmails.Add(new Recipient());
             Console.WriteLine($"Name of recipient:");
             MailgunMessage.BccEmails[0].Name = Console.ReadLine();
             Console.WriteLine($"Recipient email address:");
@@ -106,11 +106,11 @@ namespace EmailClientTester
             MailgunClientConfig.RequireTls = true;
             MailgunClientConfig.SkipVerification = false;
 
-            MailgunMessage.FromEmail.Name = "";
-            MailgunMessage.FromEmail.Address = "";
+            MailgunMessage.From.Name = "";
+            MailgunMessage.From.Address = "";
 
-            MailgunMessage.BccEmails.Add(new EmailRecipient
-                                         {
+            MailgunMessage.BccEmails.Add(new Recipient
+            {
                                              Name = "",
                                              Address = ""
                                          });
