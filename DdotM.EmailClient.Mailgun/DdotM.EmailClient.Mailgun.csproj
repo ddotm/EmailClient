@@ -1,35 +1,38 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <PackageTags>email, mailgun client</PackageTags>
-    <PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
-    <Company>Lilipudra</Company>
-    <Authors>Dmitri Mogilevski</Authors>
-    <RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Description>Client library for sending email messages through Mailgun.</Description>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.0.1</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageTags>email, mailgun client</PackageTags>
+		<PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
+		<Company>Lilipudra</Company>
+		<Authors>Dmitri Mogilevski</Authors>
+		<RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Client library for sending email messages through Mailgun.</Description>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Version>1.0.1</Version>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>C:\Users\dmimog01\Documents\randd\Reference Architecture\EmailManager\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="RestSharp" Version="106.12.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="RestSharp" Version="112.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

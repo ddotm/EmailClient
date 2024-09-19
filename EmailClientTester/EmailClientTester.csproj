@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.csproj" />
-    <ProjectReference Include="..\DdotM.EmailClient.Office365\DdotM.EmailClient.Office365.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.csproj" />
+		<ProjectReference Include="..\DdotM.EmailClient.Office365\DdotM.EmailClient.Office365.csproj" />
+	</ItemGroup>
 
 </Project>
