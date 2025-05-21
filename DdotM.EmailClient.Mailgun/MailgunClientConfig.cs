@@ -5,7 +5,7 @@
 /// </summary>
 public class MailgunClientConfig
 {
-    private string _apiKey;
+    private string _apiKey = string.Empty;
 
     /// <summary>
     /// Mailgun API key. Private key from https://app.mailgun.com/app/account/security/api_keys
@@ -19,7 +19,7 @@ public class MailgunClientConfig
     /// <summary>
     /// Mailgun sending domain
     /// </summary>
-    public string SendingDomain { get; set; }
+    public string SendingDomain { get; set; } = string.Empty;
 
     /// <summary>
     /// If set to True this requires the message only be sent over a TLS connection.

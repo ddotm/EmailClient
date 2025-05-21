@@ -3,24 +3,16 @@
 namespace DdotM.EmailClient.Mailgun;
 
 /// <inheritdoc />
-public class MailgunClient : IMailgunClient
+public class MailgunClient(
+    MailgunClientConfig mailgunClientConfig) : IMailgunClient
 {
-    private readonly MailgunClientConfig _mailgunClientConfig;
-
-    /// <summary>
-    /// Constructor. Initializes the instance with the passed in MailgunClientConfig
-    /// </summary>
-    /// <param name="mailgunClientConfig">Mailgun client configurations</param>
-    public MailgunClient(MailgunClientConfig mailgunClientConfig)
-    {
-        _mailgunClientConfig = mailgunClientConfig;
-    }
+    private readonly MailgunClientConfig _mailgunClientConfig = mailgunClientConfig ?? throw new ArgumentNullException(nameof(mailgunClientConfig));
 
     /// <inheritdoc />
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
         // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
-        var client = new RestClient("https://api.mailgun.net/v3");
+        var client = new RestClient("https://api.mailgun.net");
 
         var request = new RestRequest();
         request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.ApiKey?.Base64Encode()}");
