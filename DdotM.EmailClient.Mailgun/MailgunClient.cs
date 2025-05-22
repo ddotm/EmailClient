@@ -12,46 +12,51 @@ public class MailgunClient(
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
         // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
-        var client = new RestClient("https://api.mailgun.net");
+        var client = new RestClient();
 
-        var request = new RestRequest();
-        request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.ApiKey?.Base64Encode()}");
+        var endpoint = $"https://api.mailgun.net/v3/{_mailgunClientConfig.SendingDomain}/messages";
+
+        var credentials = $"{_mailgunClientConfig.ApiUser}:{_mailgunClientConfig.ApiKey}";
+        var authToken = credentials.Base64Encode();
+
+        var request = new RestRequest(endpoint, Method.Post);
+        
+        request.AddHeader("Authorization", $"Basic {authToken}");
+        
         request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        request.AddParameter("domain", _mailgunClientConfig.SendingDomain, ParameterType.UrlSegment);
-        request.Resource = "{domain}/messages";
-        // Send a message with custom connection settings
-        request.AddParameter("o:require-tls", _mailgunClientConfig.RequireTls);
-        request.AddParameter("o:skip-verification", _mailgunClientConfig.SkipVerification);
-
-        request.AddParameter("from", $"{msg.From.Name} <{msg.From.Address}>");
+        request.AddParameter("from", $"{msg.From.ToFullAddress()}");
 
         foreach (var toRecipient in msg.ToEmails)
         {
-            request.AddParameter("to", $"{toRecipient.Name} <{toRecipient.Address}>");
+            request.AddParameter("to", $"{toRecipient.ToFullAddress()}");
         }
 
         if (!msg.ToEmails.Any())
         {
-            request.AddParameter("to", $"{msg.From.Name} <{msg.From.Address}>");
+            request.AddParameter("to", $"{msg.From.ToFullAddress()}");
         }
 
         foreach (var ccRecipient in msg.CcEmails)
         {
-            request.AddParameter("cc", $"{ccRecipient.Name} <{ccRecipient.Address}>");
+            request.AddParameter("cc", $"{ccRecipient.ToFullAddress()}");
         }
 
         foreach (var bccRecipient in msg.BccEmails)
         {
-            request.AddParameter("bcc", $"{bccRecipient.Name} <{bccRecipient.Address}>");
+            request.AddParameter("bcc", $"{bccRecipient.ToFullAddress()}");
         }
 
         request.AddParameter("subject", msg.Subject);
         request.AddParameter("text", msg.TextBody);
         request.AddParameter("html", msg.HtmlBody);
 
+        // Send a message with custom connection settings
+        request.AddParameter("o:require-tls", _mailgunClientConfig.RequireTls ? "yes" : "no");
+        request.AddParameter("o:skip-verification", _mailgunClientConfig.SkipVerification ? "yes" : "no");
+        
         // This will disable link rewriting for this message
-        request.AddParameter("o:tracking", msg.Tracking);
+        request.AddParameter("o:tracking", msg.Tracking ? "yes" : "no");
         // Set message delivery time - format "Fri, 14 Oct 2011 23:10:10 -0000"
         if (msg.DeliveryTime.HasValue)
         {
@@ -64,7 +69,6 @@ public class MailgunClient(
             request.AddParameter("o:tag", tag);
         }
 
-        request.Method = Method.Post;
         var response = await client.ExecuteAsync(request);
 
         msg.Response = response;

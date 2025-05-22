@@ -5,16 +5,12 @@
 /// </summary>
 public class MailgunClientConfig
 {
-    private string _apiKey = string.Empty;
+    public readonly string ApiUser = "api";
 
     /// <summary>
     /// Mailgun API key. Private key from https://app.mailgun.com/app/account/security/api_keys
     /// </summary>
-    public string ApiKey
-    {
-        get => _apiKey;
-        set => _apiKey = $"api:{value}";
-    }
+    public string ApiKey { get; set; } = string.Empty;
 
     /// <summary>
     /// Mailgun sending domain
