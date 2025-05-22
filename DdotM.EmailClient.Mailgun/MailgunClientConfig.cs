@@ -1,4 +1,6 @@
-﻿namespace DdotM.EmailClient.Mailgun;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DdotM.EmailClient.Mailgun;
 
 /// <summary>
 /// Configures Mailgun client with API key, sending domain, and TLS settings.
@@ -10,11 +12,13 @@ public class MailgunClientConfig
     /// <summary>
     /// Mailgun API key. Private key from https://app.mailgun.com/app/account/security/api_keys
     /// </summary>
+    [Required]
     public string ApiKey { get; set; } = string.Empty;
 
     /// <summary>
     /// Mailgun sending domain
     /// </summary>
+    [Required]
     public string SendingDomain { get; set; } = string.Empty;
 
     /// <summary>
