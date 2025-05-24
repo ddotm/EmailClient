@@ -10,8 +10,10 @@ public class MailgunClient : IMailgunClient
     public MailgunClient(MailgunClientConfig mailgunClientConfig)
     {
         _mailgunClientConfig = mailgunClientConfig ?? throw new ArgumentNullException(nameof(mailgunClientConfig));
+        
+        _mailgunClientConfig.Validate();
     }
-
+    
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
         var endpoint = GetEndpoint();

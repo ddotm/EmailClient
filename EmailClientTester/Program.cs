@@ -22,8 +22,8 @@ internal static class Program
         // CollectInputForOffice365Email();
         // HardcodeInputForOffice365();
 
-        // CollectInputForMailgunEmail();
-        HardcodeInputForMailgun();
+        CollectInputForMailgunEmail();
+        // HardcodeInputForMailgun();
 
         // await TestOffice365Client();
         var response = await TestMailgunClient();
@@ -65,11 +65,11 @@ internal static class Program
         Console.WriteLine($"Mailgun sending domain:");
         MailgunClientConfig.SendingDomain = Console.ReadLine();
 
-        MailgunMessage.BccEmails.Add(new Recipient());
+        MailgunMessage.ToEmails.Add(new Recipient());
         Console.WriteLine($"Name of recipient:");
-        MailgunMessage.BccEmails[0].Name = Console.ReadLine();
+        MailgunMessage.ToEmails[0].Name = Console.ReadLine();
         Console.WriteLine($"Recipient email address:");
-        MailgunMessage.BccEmails[0].Address = Console.ReadLine();
+        MailgunMessage.ToEmails[0].Address = Console.ReadLine();
 
         Console.WriteLine($"Email subject:");
         MailgunMessage.Subject = Console.ReadLine();
