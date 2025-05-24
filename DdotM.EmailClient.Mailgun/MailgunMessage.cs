@@ -1,6 +1,4 @@
-﻿using RestSharp;
-
-namespace DdotM.EmailClient.Mailgun;
+﻿namespace DdotM.EmailClient.Mailgun;
 
 /// <summary>
 /// Mailgun email message
@@ -62,5 +60,5 @@ public class MailgunMessage
     /// <summary>
     /// Once the message send is attempted, Response will contain the Mailgun HTTP response data
     /// </summary>
-    public RestResponse Response { get; set; } = new();
+    public HttpResponseMessage Response { get; set; } = new ();
 }
