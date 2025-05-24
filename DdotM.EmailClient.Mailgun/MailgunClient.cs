@@ -3,17 +3,31 @@ using System.Text;
 
 namespace DdotM.EmailClient.Mailgun;
 
+/// <summary>
+/// Implementation of <see cref="IMailgunClient"/> for sending emails via Mailgun.
+/// </summary>
 public class MailgunClient : IMailgunClient
 {
     private readonly MailgunClientConfig _mailgunClientConfig;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MailgunClient"/> class with the specified configuration.
+    /// Validates the configuration before use.
+    /// </summary>
+    /// <param name="mailgunClientConfig">
+    /// The <see cref="MailgunClientConfig"/> containing Mailgun API key, sending domain, and other settings.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="mailgunClientConfig"/> is null.</exception>
+    /// <exception cref="System.ComponentModel.DataAnnotations.ValidationException">
+    /// Thrown if the configuration is invalid.
+    /// </exception>
     public MailgunClient(MailgunClientConfig mailgunClientConfig)
     {
         _mailgunClientConfig = mailgunClientConfig ?? throw new ArgumentNullException(nameof(mailgunClientConfig));
-        
         _mailgunClientConfig.Validate();
     }
-    
+
+    /// <inheritdoc />
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
         var endpoint = GetEndpoint();
