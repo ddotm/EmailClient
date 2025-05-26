@@ -119,7 +119,7 @@ internal static class Program
 
         MailgunMessage.Tags.Add("registration");
         MailgunMessage.Tracking = false;
-        MailgunMessage.DeliveryTime = DateTime.Now;
+        MailgunMessage.DeliveryTime = null;
     }
 
     private static async Task TestOffice365Client()
@@ -142,7 +142,9 @@ internal static class Program
             RequireTls = true,
             SkipVerification = false
         };
-        var mailgunClient = new MailgunClient(mailgunClientConfig);
+        IHttpClientAdapter httpClientAdapter = new HttpClientAdapter();
+
+        var mailgunClient = new MailgunClient(mailgunClientConfig, httpClientAdapter);
         var response = await mailgunClient.SendAsync(MailgunMessage);
         return response;
     }

@@ -9,9 +9,20 @@ namespace DdotM.EmailClient.Mailgun;
 public class MailgunClientConfig
 {
     /// <summary>
+    /// The base URL for the Mailgun API.
+    /// </summary>
+    /// <remarks>This URL is used as the root endpoint for all API requests to Mailgun.</remarks>
+    public string MailgunApiBaseUrl => "https://api.mailgun.net/v3";
+
+    /// <summary>
+    /// Configures the endpoint for the Mailgun API messages.
+    /// </summary>
+    public string MailgunApiEndpoint => $"{MailgunApiBaseUrl}/{SendingDomain}/messages";
+
+    /// <summary>
     /// Mailgun API user.
     /// </summary>
-    public readonly string ApiUser = "api";
+    public string ApiUser => "api";
 
     /// <summary>
     /// Mailgun Sending key.

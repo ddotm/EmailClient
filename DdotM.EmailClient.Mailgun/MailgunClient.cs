@@ -9,6 +9,8 @@ namespace DdotM.EmailClient.Mailgun;
 public class MailgunClient : IMailgunClient
 {
     private readonly MailgunClientConfig _mailgunClientConfig;
+    private readonly IHttpClientAdapter _httpClientAdapter;
+    private readonly IMailgunRequestBuilder _requestBuilder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MailgunClient"/> class with the specified configuration.
@@ -17,79 +19,44 @@ public class MailgunClient : IMailgunClient
     /// <param name="mailgunClientConfig">
     /// The <see cref="MailgunClientConfig"/> containing Mailgun API key, sending domain, and other settings.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="mailgunClientConfig"/> is null.</exception>
+    /// <param name="httpClientAdapter">The <see cref="IHttpClientAdapter"/> to be used for HTTP requests.</param>
+    /// <param name="requestBuilder">The <see cref="IMailgunRequestBuilder"/> responsible for building HTTP content from the message and config.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="mailgunClientConfig"/>, <paramref name="httpClientAdapter"/>, or <paramref name="requestBuilder"/> is null.</exception>
     /// <exception cref="System.ComponentModel.DataAnnotations.ValidationException">
     /// Thrown if the configuration is invalid.
     /// </exception>
-    public MailgunClient(MailgunClientConfig mailgunClientConfig)
+    public MailgunClient(
+        MailgunClientConfig mailgunClientConfig,
+        IHttpClientAdapter httpClientAdapter,
+        IMailgunRequestBuilder requestBuilder)
     {
         _mailgunClientConfig = mailgunClientConfig ?? throw new ArgumentNullException(nameof(mailgunClientConfig));
         _mailgunClientConfig.Validate();
+
+        _httpClientAdapter = httpClientAdapter ?? throw new ArgumentNullException(nameof(httpClientAdapter));
+        _requestBuilder = requestBuilder ?? throw new ArgumentNullException(nameof(requestBuilder));
     }
 
     /// <inheritdoc />
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
-        var endpoint = GetEndpoint();
-        var content = BuildFormContent(msg);
-        using var httpClient = CreateHttpClient();
+        var endpoint = _mailgunClientConfig.MailgunApiEndpoint;
+        var content = _requestBuilder.Build(msg);
 
-        var response = await httpClient.PostAsync(endpoint, content);
+        // Add headers
+        var credentials = $"{_mailgunClientConfig.ApiUser}:{_mailgunClientConfig.ApiKey}";
+        var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(credentials));
+        _httpClientAdapter.AddHeader("Authorization", new AuthenticationHeaderValue("Basic", authToken).ToString());
+
+        var response = await _httpClientAdapter.PostAsync(endpoint, content);
         msg.Response = response;
 
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadAsStringAsync();
-            throw new HttpRequestException(
-                $"Mailgun API request failed with status code {response.StatusCode}: {error}");
+            throw new HttpRequestException($"Mailgun API request failed with status code {response.StatusCode}: {error}");
         }
 
         return msg;
-    }
-
-    private string GetEndpoint()
-    {
-        return $"https://api.mailgun.net/v3/{_mailgunClientConfig.SendingDomain}/messages";
-    }
-
-    private FormUrlEncodedContent BuildFormContent(MailgunMessage msg)
-    {
-        var keyValues = new List<KeyValuePair<string, string>>
-        {
-            new("from", msg.From.ToFullAddress()),
-            new("subject", msg.Subject),
-            new("text", msg.TextBody),
-            new("html", string.IsNullOrWhiteSpace(msg.HtmlBody) ? msg.TextBody : msg.HtmlBody),
-            new("o:require-tls", _mailgunClientConfig.RequireTls ? "yes" : "no"),
-            new("o:skip-verification", _mailgunClientConfig.SkipVerification ? "yes" : "no"),
-            new("o:tracking", msg.Tracking ? "yes" : "no")
-        };
-
-        keyValues.AddRange(msg.ToEmails.Select(to => new KeyValuePair<string, string>("to", to.ToFullAddress())));
-        keyValues.AddRange(msg.CcEmails.Select(cc => new KeyValuePair<string, string>("cc", cc.ToFullAddress())));
-        keyValues.AddRange(msg.BccEmails.Select(bcc => new KeyValuePair<string, string>("bcc", bcc.ToFullAddress())));
-        keyValues.AddRange(msg.Tags.Select(tag => new KeyValuePair<string, string>("o:tag", tag)));
-
-        if (msg.DeliveryTime.HasValue)
-        {
-            keyValues.Add(new("o:deliverytime",
-                msg.DeliveryTime.Value.ToString("ddd, dd MMM yyyy HH:mm:ss -0000")));
-        }
-
-        return new FormUrlEncodedContent(keyValues);
-    }
-
-    private HttpClient CreateHttpClient()
-    {
-        var httpClient = new HttpClient(new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-        });
-
-        var credentials = $"{_mailgunClientConfig.ApiUser}:{_mailgunClientConfig.ApiKey}";
-        var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(credentials));
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
-
-        return httpClient;
     }
 }

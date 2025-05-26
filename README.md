@@ -3,7 +3,7 @@
 
 ## DdotM.EmailClient.Mailgun NuGet package
 
-##### Integration
+### Integration
 Add DdotM.EmailClient.Mailgun NuGet package
 
 ```csharp
