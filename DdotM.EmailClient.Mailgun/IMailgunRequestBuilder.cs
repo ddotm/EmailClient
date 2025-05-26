@@ -4,7 +4,7 @@
 /// Defines the contract for building a Mailgun HTTP request content object
 /// from a message and configuration.
 /// </summary>
-public interface IMailgunRequestBuilder
+internal interface IMailgunRequestBuilder
 {
     /// <summary>
     /// Builds the appropriate HTTP content for a Mailgun API request,

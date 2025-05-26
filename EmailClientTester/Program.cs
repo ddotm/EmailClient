@@ -142,9 +142,8 @@ internal static class Program
             RequireTls = true,
             SkipVerification = false
         };
-        IHttpClientAdapter httpClientAdapter = new HttpClientAdapter();
 
-        var mailgunClient = new MailgunClient(mailgunClientConfig, httpClientAdapter);
+        var mailgunClient = new MailgunClient(mailgunClientConfig);
         var response = await mailgunClient.SendAsync(MailgunMessage);
         return response;
     }

@@ -1,7 +1,7 @@
 ﻿namespace DdotM.EmailClient.Mailgun;
 
 /// <inheritdoc />
-public class MailgunRequestBuilder : IMailgunRequestBuilder
+internal class MailgunRequestBuilder : IMailgunRequestBuilder
 {
     private readonly MailgunClientConfig _config;
 

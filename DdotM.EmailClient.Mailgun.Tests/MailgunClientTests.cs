@@ -12,7 +12,7 @@ public class MailgunClientTests
         var adapter = Substitute.For<IHttpClientAdapter>();
         var requestBuilder = Substitute.For<IMailgunRequestBuilder>();
 
-        Action act = () => new MailgunClient(null, adapter, requestBuilder);
+        Action act = () => new MailgunClient(null!, adapter, requestBuilder);
 
         act.Should().Throw<ArgumentNullException>()
             .WithMessage("*mailgunClientConfig*");
@@ -28,7 +28,7 @@ public class MailgunClientTests
         };
         var requestBuilder = Substitute.For<IMailgunRequestBuilder>();
 
-        Action act = () => new MailgunClient(config, null, requestBuilder);
+        Action act = () => new MailgunClient(config, null!, requestBuilder);
 
         act.Should().Throw<ArgumentNullException>()
             .WithMessage("*httpClientAdapter*");
@@ -44,7 +44,7 @@ public class MailgunClientTests
         };
         var adapter = Substitute.For<IHttpClientAdapter>();
 
-        Action act = () => new MailgunClient(config, adapter, null);
+        Action act = () => new MailgunClient(config, adapter, null!);
 
         act.Should().Throw<ArgumentNullException>()
             .WithMessage("*requestBuilder*");

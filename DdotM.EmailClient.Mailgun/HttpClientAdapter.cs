@@ -3,7 +3,7 @@
 /// <summary>
 /// Concrete implementation of <see cref="IHttpClientAdapter"/>, wrapping HttpClient.
 /// </summary>
-public class HttpClientAdapter : IHttpClientAdapter
+internal class HttpClientAdapter : IHttpClientAdapter
 {
     private readonly HttpClient _httpClient;
 
