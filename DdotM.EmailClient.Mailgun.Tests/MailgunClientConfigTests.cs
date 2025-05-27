@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace DdotM.EmailClient.Mailgun.Tests;
 
