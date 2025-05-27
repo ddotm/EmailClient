@@ -1,29 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<IsPackable>true</IsPackable>
-		<PackageTags>email, mailgun client</PackageTags>
-		<PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
-		<Company>Idempotent Cookie LLC</Company>
-		<Authors>Dmitri Mogilevski</Authors>
-		<RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<Description>Client library for sending email messages through Mailgun.</Description>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<Version>2.0.0</Version>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageTags>email, mailgun, mailgun-client, email-client, smtp, transactional-email</PackageTags>
+    <PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
+    <Authors>Dmitri Mogilevski</Authors>
+    <RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>Client library for sending email messages through Mailgun's HTTP API. Modern, testable, and dependency-free.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Version>2.0.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>
