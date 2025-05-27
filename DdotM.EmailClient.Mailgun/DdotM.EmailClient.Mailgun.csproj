@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
+    <PackageId>DdotM.EmailClient.Mailgun</PackageId>
     <PackageTags>email, mailgun, mailgun-client, email-client, smtp, transactional-email</PackageTags>
     <PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
     <Authors>Dmitri Mogilevski</Authors>
