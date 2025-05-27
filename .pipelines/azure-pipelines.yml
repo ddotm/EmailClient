@@ -1,4 +1,4 @@
-﻿name: 'mailgun-client-$(Date:yyyyMMdd)$(Rev:.r)'
+name: 'mailgun-client-$(Date:yyyyMMdd)$(Rev:.r)'
 
 trigger:
   branches:
