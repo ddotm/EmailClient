@@ -46,6 +46,9 @@ stages:
         - script: dotnet build $(projectPath) --configuration $(configuration) --no-restore
           displayName: 'Build Solution'
 
+        - script: dotnet build $(testProjectPath) --configuration $(configuration) --no-restore
+          displayName: 'Build Solution'
+
         - script: dotnet test $(testProjectPath) --configuration $(configuration) --no-build --verbosity normal
           displayName: 'Run Unit Tests'
 
