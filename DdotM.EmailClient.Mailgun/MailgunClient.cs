@@ -1,81 +1,82 @@
-﻿using RestSharp;
+﻿using System.Net.Http.Headers;
+using System.Text;
 
 namespace DdotM.EmailClient.Mailgun;
 
-/// <inheritdoc />
+/// <summary>
+/// Implementation of <see cref="IMailgunClient"/> for sending emails via Mailgun.
+/// </summary>
 public class MailgunClient : IMailgunClient
 {
     private readonly MailgunClientConfig _mailgunClientConfig;
+    private readonly IHttpClientAdapter _httpClientAdapter;
+    private readonly IMailgunRequestBuilder _requestBuilder;
 
     /// <summary>
-    /// Constructor. Initializes the instance with the passed in MailgunClientConfig
+    /// Initializes a new instance of the <see cref="MailgunClient"/> class with the specified configuration.
+    /// Uses the default HTTP adapter and request builder.
     /// </summary>
-    /// <param name="mailgunClientConfig">Mailgun client configurations</param>
-    public MailgunClient(MailgunClientConfig mailgunClientConfig)
+    /// <param name="config">
+    /// The <see cref="MailgunClientConfig"/> containing Mailgun API key, sending domain, and other settings.
+    /// </param>
+    public MailgunClient(MailgunClientConfig config)
+        : this(
+            config,
+            new HttpClientAdapter(),
+            new MailgunRequestBuilder(config))
     {
-        _mailgunClientConfig = mailgunClientConfig;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MailgunClient"/> class with full dependency control.
+    /// This constructor is <c>internal</c> so unit tests can inject mocks.
+    /// </summary>
+    /// <param name="mailgunClientConfig">
+    /// The <see cref="MailgunClientConfig"/> containing Mailgun API key, sending domain, and other settings.
+    /// </param>
+    /// <param name="httpClientAdapter">
+    /// The <see cref="IHttpClientAdapter"/> to be used for HTTP requests.
+    /// </param>
+    /// <param name="requestBuilder">
+    /// The <see cref="IMailgunRequestBuilder"/> responsible for building HTTP content from the message and config.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="mailgunClientConfig"/>, <paramref name="httpClientAdapter"/>, or <paramref name="requestBuilder"/> is null.
+    /// </exception>
+    /// <exception cref="System.ComponentModel.DataAnnotations.ValidationException">
+    /// Thrown if the configuration is invalid.
+    /// </exception>
+    internal MailgunClient(
+        MailgunClientConfig mailgunClientConfig,
+        IHttpClientAdapter httpClientAdapter,
+        IMailgunRequestBuilder requestBuilder)
+    {
+        _mailgunClientConfig = mailgunClientConfig ?? throw new ArgumentNullException(nameof(mailgunClientConfig));
+        _mailgunClientConfig.Validate();
+
+        _httpClientAdapter = httpClientAdapter ?? throw new ArgumentNullException(nameof(httpClientAdapter));
+        _requestBuilder = requestBuilder ?? throw new ArgumentNullException(nameof(requestBuilder));
     }
 
     /// <inheritdoc />
     public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
     {
-        // Mailgun API documentation: https://documentation.mailgun.com/en/latest/user_manual.html#sending-via-api
-        var client = new RestClient("https://api.mailgun.net/v3");
+        var endpoint = _mailgunClientConfig.MailgunApiEndpoint;
+        var content = _requestBuilder.Build(msg);
 
-        var request = new RestRequest();
-        request.AddHeader("Authorization", $"Basic {_mailgunClientConfig.ApiKey?.Base64Encode()}");
-        request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+        // Add basic auth header
+        var credentials = $"{_mailgunClientConfig.ApiUser}:{_mailgunClientConfig.ApiKey}";
+        var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(credentials));
+        _httpClientAdapter.AddHeader("Authorization", new AuthenticationHeaderValue("Basic", authToken).ToString());
 
-        request.AddParameter("domain", _mailgunClientConfig.SendingDomain, ParameterType.UrlSegment);
-        request.Resource = "{domain}/messages";
-        // Send a message with custom connection settings
-        request.AddParameter("o:require-tls", _mailgunClientConfig.RequireTls);
-        request.AddParameter("o:skip-verification", _mailgunClientConfig.SkipVerification);
-
-        request.AddParameter("from", $"{msg.From.Name} <{msg.From.Address}>");
-
-        foreach (var toRecipient in msg.ToEmails)
-        {
-            request.AddParameter("to", $"{toRecipient.Name} <{toRecipient.Address}>");
-        }
-
-        if (!msg.ToEmails.Any())
-        {
-            request.AddParameter("to", $"{msg.From.Name} <{msg.From.Address}>");
-        }
-
-        foreach (var ccRecipient in msg.CcEmails)
-        {
-            request.AddParameter("cc", $"{ccRecipient.Name} <{ccRecipient.Address}>");
-        }
-
-        foreach (var bccRecipient in msg.BccEmails)
-        {
-            request.AddParameter("bcc", $"{bccRecipient.Name} <{bccRecipient.Address}>");
-        }
-
-        request.AddParameter("subject", msg.Subject);
-        request.AddParameter("text", msg.TextBody);
-        request.AddParameter("html", msg.HtmlBody);
-
-        // This will disable link rewriting for this message
-        request.AddParameter("o:tracking", msg.Tracking);
-        // Set message delivery time - format "Fri, 14 Oct 2011 23:10:10 -0000"
-        if (msg.DeliveryTime.HasValue)
-        {
-            request.AddParameter("o:deliverytime", msg.DeliveryTime.Value.ToString("ddd, dd MMM yyyy HH:mm:ss -0000"));
-        }
-
-        // Add tag(s)
-        foreach (var tag in msg.Tags)
-        {
-            request.AddParameter("o:tag", tag);
-        }
-
-        request.Method = Method.Post;
-        var response = await client.ExecuteAsync(request);
-
+        var response = await _httpClientAdapter.PostAsync(endpoint, content);
         msg.Response = response;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Mailgun API request failed with status code {response.StatusCode}: {error}");
+        }
 
         return msg;
     }

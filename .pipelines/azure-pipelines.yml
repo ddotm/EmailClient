@@ -1,0 +1,82 @@
+name: 'mailgun-client-$(Date:yyyyMMdd)$(Rev:.r)'
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - DdotM.EmailClient.Mailgun/**
+
+pool:
+  vmImage: 'windows-latest'
+  workspace:
+    clean: all
+
+variables:
+  configuration:       'Release'
+  dotNetVersion:       '8.x'
+  projectPath:         'DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj'
+  testProjectPath:     'DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj'
+  outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
+
+stages:
+- stage: BuildTestPack
+  displayName: '🏗️ Build, Test, and Pack'
+  jobs:
+    - job: Build
+      displayName: '🔧 Build, Test, Pack'
+      steps:
+        - checkout: self
+          persistCredentials: true
+          clean: true
+
+        - task: UseDotNet@2
+          displayName: 'Install .NET SDK'
+          inputs:
+            packageType: sdk
+            version: '$(dotNetVersion)'
+
+        - script: dotnet restore $(projectPath)
+          displayName: 'Restore NuGet Packages in NuGet package project'
+
+        - script: dotnet restore $(testProjectPath)
+          displayName: 'Restore NuGet Packages in test project'
+
+        - script: dotnet build $(projectPath) --configuration $(configuration) --no-restore
+          displayName: 'Build Solution'
+
+        - script: dotnet test $(testProjectPath) --configuration $(configuration) --no-build --verbosity normal
+          displayName: 'Run Unit Tests'
+
+        - script: dotnet pack $(projectPath) --configuration $(configuration) --no-build -o $(outputDir)
+          displayName: 'Pack NuGet Package'
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Build Artifacts'
+          inputs:
+            pathToPublish: '$(outputDir)'
+            artifactName: 'nuget-package'
+            publishLocation: 'Container'
+
+- stage: PublishNuGet
+  displayName: '🚀 Publish to NuGet.org'
+  dependsOn: BuildTestPack
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+    - job: Push
+      displayName: 'Push to NuGet.org'
+      steps:
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Package Artifacts'
+          inputs:
+            artifactName: 'nuget-package'
+            downloadPath: '$(Pipeline.Workspace)/artifacts'
+
+        - task: NuGetToolInstaller@1
+          displayName: 'Install NuGet Tool'
+
+        - script: |
+            dotnet nuget push "$(Pipeline.Workspace)/artifacts/**/*.nupkg" --api-key $(NUGET_API_KEY) --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+            dotnet nuget push "$(Pipeline.Workspace)/artifacts/**/*.snupkg" --api-key $(NUGET_API_KEY) --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+          displayName: 'Push .nupkg and .snupkg to NuGet.org'
