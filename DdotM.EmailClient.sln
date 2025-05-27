@@ -19,6 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DdotM.EmailClient.Mailgun.Tests", "DdotM.EmailClient.Mailgun.Tests\DdotM.EmailClient.Mailgun.Tests.csproj", "{A397538F-A7AA-476D-AF49-D54286DEEC3C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".pipelines", ".pipelines", "{99D66B45-D7A6-4F86-9342-7DC518BD7F87}"
+	ProjectSection(SolutionItems) = preProject
+		.pipelines\azure-pipelines.yml = .pipelines\azure-pipelines.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
