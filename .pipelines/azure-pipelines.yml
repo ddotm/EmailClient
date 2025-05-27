@@ -3,7 +3,7 @@ name: 'mailgun-client-$(Date:yyyyMMdd)$(Rev:.r)'
 trigger:
   branches:
     include:
-      - develop
+      - master
   paths:
     include:
       - DdotM.EmailClient.Mailgun/**
@@ -19,7 +19,6 @@ variables:
   projectPath:         'DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj'
   testProjectPath:     'DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj'
   outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
-  packageName:         'ddotm-emailclient-mailgun'
 
 stages:
 - stage: BuildTestPack
@@ -63,7 +62,7 @@ stages:
 - stage: PublishNuGet
   displayName: '🚀 Publish to NuGet.org'
   dependsOn: BuildTestPack
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
     - job: Push
       displayName: 'Push to NuGet.org'
