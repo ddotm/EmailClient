@@ -31,6 +31,9 @@ stages:
           persistCredentials: true
           clean: true
 
+        - script: |
+            echo "Branch: $(Build.SourceBranch)"
+          displayName: 'Print Build.SourceBranch'
         - task: UseDotNet@2
           displayName: 'Install .NET SDK'
           inputs:
