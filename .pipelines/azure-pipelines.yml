@@ -8,6 +8,8 @@ trigger:
     include:
       - DdotM.EmailClient.Mailgun/**
 
+pr: none
+
 pool:
   vmImage: 'windows-latest'
   workspace:
