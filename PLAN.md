@@ -81,9 +81,18 @@ Build a single, ASP.NET Core-friendly package surface that supports SMTP, Mailgu
 3. Test strategy depth: include optional live-provider integration tests behind environment flags vs. fully mocked CI-only tests.
 
 
-DIMA'S NOTES:`
-SMTP > Mailgun > SendGrid > Office365 - that is the preferred implementation order, nothing else. There will be no failover whatsoever. Take failover provisions out of the spec.
-
-Convert .sln to .slnx 
-
-I stupidly named the nuget DdotM.EmailClient.Mailgun. This will have to be rebranded and published under a different name. That will affect proj metadata, build yml etc.
+## DIMA'S NOTES
+- SMTP > Mailgun > SendGrid > Office365 - that is the preferred implementation order, nothing else. There will be no failover whatsoever. Take failover provisions out of the spec.
+- Convert .sln to .slnx 
+- I stupidly named the nuget DdotM.EmailClient.Mailgun. It will have to be rebranded and published under a different name. That will affect proj metadata, build yml etc.
+- Each provider should have its own project. The shared abstractions will be in DdotM.EmailClient.Infrastracture project (new).
+- The public contract for the package will be the shared abstractions + DI extensions. Each provider project will be an implementation detail and not expose provider-specific types in the main contract.
+- Closely adhere to Single Responsibility, Separation of Concerns, and DRY Principles across the codebase.
+- Docs that must be updated or added
+  - README.md
+  - CONTRIBUTING.md (add coding conventions, local setup, testing guidelines, and contribution workflow)
+  - AGENT.md (new - architecture overview, design decisions, and agent guidance for future contributions)
+- Testing tech stack: xUnit, NSubstitute for mocking, FluentAssertions for assertions. Existing tests must be adapted to this.
+- As much as possible, public classes must be very thin. Interface based private classes should be fully testable.
+- Backward compatability is not a concern at all. This nuget will be published under a new name. Old one will just exist out there as-is and be unsupported. No need for adapters or obsoletes.
+- Don't rely on your training data alone. Whenever possible, read web documentation to know the latest versions' public API and best practices.
