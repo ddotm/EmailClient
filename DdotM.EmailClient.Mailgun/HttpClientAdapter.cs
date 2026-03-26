@@ -12,10 +12,7 @@ internal class HttpClientAdapter : IHttpClientAdapter
     /// </summary>
     public HttpClientAdapter()
     {
-        _httpClient = new HttpClient(new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-        });
+        _httpClient = new HttpClient();
     }
 
     ///<inheritdoc/>

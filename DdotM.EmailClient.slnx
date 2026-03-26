@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/.pipelines/">
+    <File Path=".pipelines/azure-pipelines.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj" />
+  </Folder>
+  <Project Path="DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj" />
+  <Project Path="DdotM.EmailClient.Office365/DdotM.EmailClient.Office365.csproj" />
+  <Project Path="EmailClientTester/EmailClientTester.csproj" />
+</Solution>

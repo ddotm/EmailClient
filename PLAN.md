@@ -114,3 +114,77 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 - As much as possible, public classes must be very thin. Interface based private classes should be fully testable.
 - Backward compatability is not a concern at all. This nuget will be published under a new name. Old one will just exist out there as-is and be unsupported. No need for adapters or obsoletes.
 - Don't rely on your training data alone. Whenever possible, read web documentation to know the latest versions' public API and best practices.
+
+- # ADR 0001: Provider Strategy and Selection Model
+
+- Status: Accepted
+- Date: 2026-03-25
+
+## Context
+The package must support multiple email providers while remaining simple for ASP.NET Core applications. The required provider priority is:
+1. SMTP
+2. Mailgun
+3. SendGrid
+4. Office365
+
+There was ambiguity in the draft plan about whether provider priority implied runtime failover behavior.
+
+## Decision
+1. Provider implementation and delivery order is fixed to SMTP, then Mailgun, then SendGrid, then Office365.
+2. Runtime behavior is explicit provider selection by configuration type (for example: SmtpConfig, MailgunConfig, SendGridConfig, Office365Config).
+3. No failover behavior will be implemented.
+4. No failover extension points will be included in the public contract for this release.
+
+## Consequences
+1. Runtime behavior remains deterministic and easy to reason about.
+2. Failure handling is the responsibility of consuming applications and calling workflows.
+3. The package avoids hidden delivery retries or cross-provider side effects.
+4. The architecture stays open to future failover ADRs without adding accidental complexity now.
+
+# ADR 0002: Solution Structure, Packaging, and Public Contract
+
+- Status: Accepted
+- Date: 2026-03-25
+
+## Context
+The repository started as a Mailgun-focused package and now needs to become a rebranded multi-provider package. Existing structure and naming do not match the desired long-term architecture.
+
+## Decision
+1. The solution format is migrated from .sln to .slnx as the canonical solution entry.
+2. The package is rebranded from DdotM.EmailClient.Mailgun to a new package identity.
+3. Shared abstractions and DI contract live in a dedicated project: DdotM.EmailClient.Infrastructure.
+4. Each provider has its own project and depends on the infrastructure abstractions.
+5. The only public package contract is shared abstractions plus DI extension methods.
+6. Provider-specific implementation types are not exposed through the main consumer contract.
+7. Backward compatibility with the existing Mailgun package is explicitly out of scope.
+
+## Consequences
+1. Consumers get a clean, provider-agnostic integration surface suitable for ASP.NET Core MVC and API projects.
+2. Provider implementations can evolve independently with reduced coupling.
+3. Rebranding affects project metadata, CI configuration, package publishing, and documentation.
+4. No adapter or obsolete layers are required, reducing maintenance burden.
+
+# ADR 0003: Engineering Principles, Test Stack, and Documentation Baseline
+
+- Status: Accepted
+- Date: 2026-03-25
+
+## Context
+The modernization effort requires consistent architectural discipline and quality standards across a growing multi-project solution.
+
+## Decision
+1. Code changes must adhere to Single Responsibility, Separation of Concerns, and DRY.
+2. Public classes should be thin orchestration surfaces wherever possible.
+3. Behavior is pushed behind interface-based internal/private services that are independently testable.
+4. Test stack is standardized to xUnit, NSubstitute, and FluentAssertions; existing tests are adapted to this standard.
+5. Required documentation set includes:
+   - README.md updates
+   - CONTRIBUTING.md (coding conventions, local setup, testing guidelines, contribution workflow)
+   - AGENT.md (architecture overview, design decisions, agent guidance)
+6. Implementation choices should be validated against current official documentation when possible, rather than relying only on historical assumptions.
+
+## Consequences
+1. The codebase remains maintainable as providers and integrations grow.
+2. Tests align with architecture boundaries and support safer refactoring.
+3. Contributor onboarding and agent-assisted work become more reliable through explicit documentation.
+4. The team accepts up-front documentation and design effort to reduce long-term delivery risk.

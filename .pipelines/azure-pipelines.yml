@@ -17,7 +17,7 @@ pool:
 
 variables:
   configuration:       'Release'
-  dotNetVersion:       '8.x'
+  dotNetVersion:       '10.x'
   projectPath:         'DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj'
   testProjectPath:     'DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj'
   outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
