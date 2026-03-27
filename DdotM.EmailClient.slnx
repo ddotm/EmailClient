@@ -5,6 +5,9 @@
   <Folder Name="/Solution Items/">
     <File Path="AGENT.md" />
     <File Path="README.md" />
+    <File Path=".gitignore" />
+    <File Path=".editorconfig" />
+    <File Path="LICENSE" />
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj" />
