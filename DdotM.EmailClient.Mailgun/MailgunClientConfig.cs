@@ -1,13 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using DdotM.EmailClient.Infrastructure;
 
 namespace DdotM.EmailClient.Mailgun;
 
 /// <summary>
 /// Configures Mailgun client with API key, sending domain, and TLS settings.
 /// </summary>
-public class MailgunClientConfig
+public class MailgunClientConfig : IEmailClientConfiguration
 {
+    public EmailProvider Provider => EmailProvider.Mailgun;
+
     /// <summary>
     /// The base URL for the Mailgun API.
     /// </summary>

@@ -28,4 +28,8 @@
     <None Include="..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DdotM.EmailClient.Infrastructure\DdotM.EmailClient.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -11,4 +11,8 @@
 		<PackageReference Include="MailKit" Version="4.12.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\DdotM.EmailClient.Infrastructure\DdotM.EmailClient.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>
