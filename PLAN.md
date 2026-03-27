@@ -28,8 +28,8 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 4.5 [ ] Ensure each provider has its own project and depends on DdotM.EmailClient.Infrastructure only.
 
 5. [ ] Phase 5 - ASP.NET Core integration surface (depends on 3,4)
-5.1 [ ] Add DI extension methods on IServiceCollection for easy integration, including single entrypoint AddEmailSupport(configObject).
-5.2 [ ] Add provider-specific overloads/options where useful, but keep one clear default path for MVC/API projects.
+5.1 [ ] Add DI extension methods on IServiceCollection using the decided entry point: services.AddEmailSending().Use<Provider>(...).
+5.2 [ ] One active provider per application in v1; no chaining or fallback. DI is first-class but optional — the package must be usable without DI.
 5.3 [ ] Add options validation and startup-time diagnostics for invalid configuration.
 
 6. [ ] Phase 6 - Architecture optimization and cleanup (parallel with 4/5 where safe)
@@ -53,8 +53,7 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 8.5 [ ] Validate APIs and best practices against current official docs during implementation rather than relying on historical assumptions.
 
 **Relevant files**
-- DdotM.EmailClient.sln - source solution to replace.
-- DdotM.EmailClient.slnx - new primary solution format and project orchestration.
+- DdotM.EmailClient.slnx - primary solution format and project orchestration.
 - .pipelines/azure-pipelines.yml - SDK version and multi-target build/test updates.
 - DdotM.EmailClient.Infrastructure/DdotM.EmailClient.Infrastructure.csproj - new shared abstractions and DI contract surface.
 - DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj - target frameworks, provider implementation alignment, and package metadata updates.
@@ -78,7 +77,7 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 1. Build all projects for each target framework and ensure clean compile.
 2. Run full test suite with coverage; verify new provider and DI tests pass.
 3. Validate startup-time options validation catches invalid config for each provider type.
-4. Execute smoke scenarios for MVC/API style registration using AddEmailSupport(configObject) and confirm selected provider dispatch.
+4. Execute smoke scenarios for MVC/API style registration using services.AddEmailSending().Use<Provider>(...) and confirm selected provider dispatch.
 5. Confirm no insecure certificate bypass remains in HTTP sending path.
 6. Validate package artifacts, renamed package identity, and README examples are consistent with shipped API.
 7. Confirm .slnx is the canonical solution entry and CI uses it.
@@ -86,6 +85,11 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 9. Confirm provider implementations are complete in required order: SMTP, Mailgun, SendGrid, Office365.
 
 **Decisions**
+- Package name: IdempotentCookie.Email
+- Namespaces: IdempotentCookie.Email.DependencyInjection, IdempotentCookie.Email.Smtp, IdempotentCookie.Email.Mailgun, IdempotentCookie.Email.SendGrid, IdempotentCookie.Email.Office365
+- DI entry point: services.AddEmailSending().Use<Provider>(...) — no variants.
+- DI scope: one active provider per application in v1; no multi-provider chaining or fallback.
+- DI optionality: DI support is first-class but optional; the package must be usable without DI.
 - Package shape: single rebranded package is the target public surface.
 - Runtime provider behavior: explicit provider selection by config type; no failover support.
 - Target framework: prefer net8.0 + net10.0 multi-target; net10.0-only is acceptable fallback if constraints are discovered.
@@ -96,7 +100,6 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 **Further Considerations**
 1. SMTP implementation detail: reuse MailKit for generic SMTP transport or adopt System.Net.Mail-compatible path for reduced dependencies.
 2. Test strategy depth: include optional live-provider integration tests behind environment flags vs. fully mocked CI-only tests.
-3. Rebrand details: decide final package ID, assembly names, namespaces, and migration messaging in docs.
 
 
 ## DIMA'S NOTES
@@ -151,7 +154,7 @@ The repository started as a Mailgun-focused package and now needs to become a re
 
 ## Decision
 1. The solution format is migrated from .sln to .slnx as the canonical solution entry.
-2. The package is rebranded from DdotM.EmailClient.Mailgun to a new package identity.
+2. The package is rebranded from DdotM.EmailClient.Mailgun to IdempotentCookie.Email.
 3. Shared abstractions and DI contract live in a dedicated project: DdotM.EmailClient.Infrastructure.
 4. Each provider has its own project and depends on the infrastructure abstractions.
 5. The only public package contract is shared abstractions plus DI extension methods.
