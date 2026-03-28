@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <AssemblyName>IdempotentCookie.Email.Smtp.Tests</AssemblyName>
+    <AssemblyName>IdempotentCookie.Email.Office365.Tests</AssemblyName>
     <Threshold>80</Threshold>
     <ThresholdType>line</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
-    <Include>[IdempotentCookie.Email.Smtp*]*</Include>
+    <Include>[IdempotentCookie.Email.Office365*]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdempotentCookie.Email.Smtp\IdempotentCookie.Email.Smtp.csproj" />
+    <ProjectReference Include="..\IdempotentCookie.Email.Office365\IdempotentCookie.Email.Office365.csproj" />
   </ItemGroup>
 
 </Project>

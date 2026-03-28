@@ -10,8 +10,9 @@ namespace IdempotentCookie.Email.Smtp.Tests;
 public class SmtpEmailClientTests
 {
     [Fact]
-    public async Task SendAsync_WithCredentials_ConnectsAuthenticatesAndSends()
+    public async Task SmtpEmailClient_SendAsync_WhenCredentialsAreProvided_ConnectsAuthenticatesAndSends()
     {
+        // Arrange
         var config = new SmtpClientConfig
         {
             Host = "smtp.example.com",
@@ -32,8 +33,10 @@ public class SmtpEmailClientTests
 
         var client = new SmtpEmailClient(config, smtpClientFactory, mimeMessageFactory);
 
+    // Act
         await client.SendAsync(message, cancellationToken);
 
+    // Assert
         smtpClientFactory.Received(1).Create();
         mimeMessageFactory.Received(1).Create(message);
         await smtpClient.Received(1).ConnectAsync("smtp.example.com", 2525, SecureSocketOptions.SslOnConnect, cancellationToken);
@@ -43,8 +46,10 @@ public class SmtpEmailClientTests
     }
 
     [Fact]
-    public async Task SendAsync_WithoutCredentials_SkipsAuthentication()
+    public async Task SmtpEmailClient_SendAsync_WhenCredentialsAreMissing_SkipsAuthentication()
     {
+        // Arrange
+        var cancellationToken = TestContext.Current.CancellationToken;
         var config = new SmtpClientConfig
         {
             Host = "smtp.example.com",
@@ -61,15 +66,48 @@ public class SmtpEmailClientTests
 
         var client = new SmtpEmailClient(config, smtpClientFactory, mimeMessageFactory);
 
-        await client.SendAsync(message);
+        // Act
+        await client.SendAsync(message, cancellationToken);
 
+        // Assert
         await smtpClient.DidNotReceive().AuthenticateAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
-        await smtpClient.Received(1).SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>());
+        await smtpClient.Received(1).SendAsync(Arg.Any<MimeMessage>(), cancellationToken);
     }
 
     [Fact]
-    public void MimeMessageFactory_MapsAttachmentsAndRecipients()
+    public async Task SmtpEmailClient_SendAsync_WhenSendFails_DisconnectsBeforeThrowing()
     {
+        // Arrange
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var config = new SmtpClientConfig
+        {
+            Host = "smtp.example.com"
+        };
+        var smtpClient = Substitute.For<ISmtpClientAdapter>();
+        var smtpClientFactory = Substitute.For<ISmtpClientAdapterFactory>();
+        var mimeMessageFactory = Substitute.For<ISmtpMimeMessageFactory>();
+        var message = new EmailMessage();
+
+        smtpClientFactory.Create().Returns(smtpClient);
+        mimeMessageFactory.Create(message).Returns(new MimeMessage());
+        smtpClient.SendAsync(Arg.Any<MimeMessage>(), Arg.Any<CancellationToken>())
+            .Returns<Task>(_ => throw new InvalidOperationException("send failed"));
+
+        var client = new SmtpEmailClient(config, smtpClientFactory, mimeMessageFactory);
+
+        // Act
+        Func<Task> act = () => client.SendAsync(message, cancellationToken);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("send failed");
+        await smtpClient.Received(1).DisconnectAsync(true, cancellationToken);
+    }
+
+    [Fact]
+    public void SmtpMimeMessageFactory_Create_WhenMessageHasRecipientsAndAttachments_MapsMimeMessage()
+    {
+        // Arrange
         var message = new EmailMessage
         {
             From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
@@ -90,8 +128,10 @@ public class SmtpEmailClientTests
 
         var factory = new SmtpMimeMessageFactory();
 
+        // Act
         var result = factory.Create(message);
 
+        // Assert
         result.From.Count.Should().Be(1);
         result.To.Count.Should().Be(1);
         result.Cc.Count.Should().Be(1);

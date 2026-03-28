@@ -38,12 +38,12 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 6.3 [x] Keep public classes thin and orchestration-focused; move behavior behind interface-based internal/private services that are independently testable.
 6.4 [x] Do not add backward compatibility adapters or obsoletes; old package remains unsupported as-is.
 
-7. [ ] Phase 7 - Tests and quality gates (depends on 4,5,6)
-7.1 [ ] Expand unit tests to cover SMTP, SendGrid, Office365, Mailgun request composition, validation, cancellation, and failure paths.
-7.2 [ ] Add integration-style tests with mocked HTTP/SMTP seams to verify end-to-end provider behavior.
+7. [x] Phase 7 - Tests and quality gates (depends on 4,5,6)
+7.1 [x] Expand unit tests to cover SMTP, SendGrid, Office365, Mailgun request composition, validation, cancellation, and failure paths.
+7.2 [x] Add integration-style tests with mocked HTTP/SMTP seams to verify end-to-end provider behavior.
 7.3 [x] Add DI registration tests for AddEmailSupport(configObject) and provider selection behavior.
-7.4 [ ] Establish minimum coverage targets per provider and for shared abstraction layer.
-7.5 [ ] Standardize test stack on xUnit + NSubstitute + FluentAssertions and adapt existing tests accordingly.
+7.4 [x] Establish minimum coverage targets per provider and for shared abstraction layer.
+7.5 [x] Standardize test stack on xunit.v3 + NSubstitute + AwesomeAssertions and adapt existing tests accordingly.
 
 8. [ ] Phase 8 - Packaging, docs, and agent guidance (depends on 7)
 8.1 [ ] Update README from Mailgun-only to multi-provider usage and ASP.NET Core examples.
@@ -115,7 +115,7 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
   - README.md
   - CONTRIBUTING.md (add coding conventions, local setup, testing guidelines, and contribution workflow)
   - AGENT.md (new - architecture overview, design decisions, and agent guidance for future contributions)
-- Testing tech stack: xUnit, NSubstitute for mocking, FluentAssertions for assertions. Existing tests must be adapted to this.
+- Testing tech stack: xunit.v3, NSubstitute for mocking, AwesomeAssertions for assertions. Existing tests must be adapted to this.
 - As much as possible, public classes must be very thin. Interface based private classes should be fully testable.
 - Backward compatability is not a concern at all. This nuget will be published under a new name. Old one will just exist out there as-is and be unsupported. No need for adapters or obsoletes.
 - Don't rely on your training data alone. Whenever possible, read web documentation to know the latest versions' public API and best practices.
@@ -181,7 +181,7 @@ The modernization effort requires consistent architectural discipline and qualit
 1. Code changes must adhere to Single Responsibility, Separation of Concerns, and DRY.
 2. Public classes should be thin orchestration surfaces wherever possible.
 3. Behavior is pushed behind interface-based internal/private services that are independently testable.
-4. Test stack is standardized to xUnit, NSubstitute, and FluentAssertions; existing tests are adapted to this standard.
+4. Test stack is standardized to xunit.v3, NSubstitute, and AwesomeAssertions; existing tests are adapted to this standard.
 5. Required documentation set includes:
    - README.md updates
    - CONTRIBUTING.md (coding conventions, local setup, testing guidelines, contribution workflow)

@@ -10,8 +10,10 @@ namespace IdempotentCookie.Email.SendGrid.Tests;
 public class SendGridEmailClientTests
 {
     [Fact]
-    public async Task SendAsync_OnSuccess_UsesAdapterAndMappedPayload()
+    public async Task SendGridEmailClient_SendAsync_WhenResponseIsSuccessful_UsesAdapterAndMappedPayload()
     {
+        // Arrange
+        var cancellationToken = TestContext.Current.CancellationToken;
         var config = new SendGridClientConfig { ApiKey = "SG.test-key" };
         var adapter = Substitute.For<ISendGridClientAdapter>();
         var adapterFactory = Substitute.For<ISendGridClientAdapterFactory>();
@@ -26,16 +28,45 @@ public class SendGridEmailClientTests
 
         var client = new SendGridEmailClient(config, adapterFactory, messageFactory);
 
-        await client.SendAsync(emailMessage);
+        // Act
+        await client.SendAsync(emailMessage, cancellationToken);
 
+        // Assert
         adapterFactory.Received(1).Create(config);
         messageFactory.Received(1).Create(emailMessage);
-        await adapter.Received(1).SendEmailAsync(sendGridMessage, Arg.Any<CancellationToken>());
+        await adapter.Received(1).SendEmailAsync(sendGridMessage, cancellationToken);
     }
 
     [Fact]
-    public async Task SendAsync_OnFailure_ThrowsHttpRequestException()
+    public async Task SendGridEmailClient_SendAsync_WhenCancellationTokenIsProvided_ForwardsCancellationToken()
     {
+        // Arrange
+        var config = new SendGridClientConfig { ApiKey = "SG.test-key" };
+        var adapter = Substitute.For<ISendGridClientAdapter>();
+        var adapterFactory = Substitute.For<ISendGridClientAdapterFactory>();
+        var messageFactory = Substitute.For<ISendGridMessageFactory>();
+        var emailMessage = new EmailMessage();
+        var sendGridMessage = new SendGridMessage();
+        var cancellationToken = new CancellationTokenSource().Token;
+
+        adapterFactory.Create(config).Returns(adapter);
+        messageFactory.Create(emailMessage).Returns(sendGridMessage);
+        adapter.SendEmailAsync(sendGridMessage, cancellationToken)
+            .Returns(new SendGridResponse(HttpStatusCode.Accepted, string.Empty));
+
+        var client = new SendGridEmailClient(config, adapterFactory, messageFactory);
+
+        // Act
+        await client.SendAsync(emailMessage, cancellationToken);
+
+        // Assert
+        await adapter.Received(1).SendEmailAsync(sendGridMessage, cancellationToken);
+    }
+
+    [Fact]
+    public async Task SendGridEmailClient_SendAsync_WhenResponseIsUnsuccessful_ThrowsHttpRequestException()
+    {
+        // Arrange
         var config = new SendGridClientConfig { ApiKey = "SG.test-key" };
         var adapter = Substitute.For<ISendGridClientAdapter>();
         var adapterFactory = Substitute.For<ISendGridClientAdapterFactory>();
@@ -49,15 +80,18 @@ public class SendGridEmailClientTests
 
         var client = new SendGridEmailClient(config, adapterFactory, messageFactory);
 
+        // Act
         Func<Task> act = () => client.SendAsync(new EmailMessage());
 
+        // Assert
         await act.Should().ThrowAsync<HttpRequestException>()
             .WithMessage("SendGrid API request failed with status code BadRequest: bad request");
     }
 
     [Fact]
-    public void MessageFactory_MapsRecipientsAndAttachments()
+    public void SendGridMessageFactory_Create_WhenMessageHasRecipientsAndAttachments_MapsSendGridMessage()
     {
+        // Arrange
         var message = new EmailMessage
         {
             From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
@@ -78,8 +112,10 @@ public class SendGridEmailClientTests
 
         var factory = new SendGridMessageFactory();
 
+        // Act
         var result = factory.Create(message);
 
+        // Assert
         result.From.Email.Should().Be("sender@example.com");
         result.Personalizations.Should().ContainSingle();
         result.Attachments.Should().ContainSingle();
