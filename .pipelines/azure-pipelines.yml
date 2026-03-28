@@ -1,4 +1,4 @@
-name: 'mailgun-client-$(Date:yyyyMMdd)$(Rev:.r)'
+name: 'idempotentcookie-email-$(Date:yyyyMMdd)$(Rev:.r)'
 
 trigger:
   branches:
@@ -6,7 +6,9 @@ trigger:
       - master
   paths:
     include:
-      - DdotM.EmailClient.Mailgun/**
+      - IdempotentCookie.Email.Infrastructure/**
+      - IdempotentCookie.Email.Mailgun/**
+      - IdempotentCookie.Email.Office365/**
 
 pr: none
 
@@ -18,8 +20,8 @@ pool:
 variables:
   configuration:       'Release'
   dotNetVersion:       '10.x'
-  projectPath:         'DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj'
-  testProjectPath:     'DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj'
+  projectPath:         'IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj'
+  testProjectPath:     'IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj'
   outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
 
 stages:

@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/.pipelines/">
+    <File Path=".pipelines/azure-pipelines.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="AGENT.md" />
+    <File Path="README.md" />
+    <File Path=".gitignore" />
+    <File Path=".editorconfig" />
+    <File Path="LICENSE" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj" />
+  </Folder>
+  <Project Path="IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj" />
+  <Project Path="IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj" />
+  <Project Path="IdempotentCookie.Email.Office365/IdempotentCookie.Email.Office365.csproj" />
+  <Project Path="EmailClientTester/EmailClientTester.csproj" />
+</Solution>

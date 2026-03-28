@@ -9,8 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DdotM.EmailClient.Mailgun\DdotM.EmailClient.Mailgun.csproj" />
-		<ProjectReference Include="..\DdotM.EmailClient.Office365\DdotM.EmailClient.Office365.csproj" />
+		<ProjectReference Include="..\IdempotentCookie.Email.Mailgun\IdempotentCookie.Email.Mailgun.csproj" />
+		<ProjectReference Include="..\IdempotentCookie.Email.Office365\IdempotentCookie.Email.Office365.csproj" />
 	</ItemGroup>
 
 </Project>

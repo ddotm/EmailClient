@@ -7,25 +7,25 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 1.1 [x] Confirm target framework strategy: multi-target net8.0;net10.0 for all shipping projects, fallback to net10.0-only if dependency/tooling constraints emerge.
 1.2 [x] Update solution/project metadata and CI pipeline to build/test selected target(s).
 1.3 [x] Convert solution from .sln to .slnx and ensure local/devops workflows are updated.
-1.4 [ ] Rebrand package identity from DdotM.EmailClient.Mailgun to the new package name across project metadata, CI, and documentation.
+1.4 [x] Rebrand package identity from DdotM.EmailClient.Mailgun to IdempotentCookie.Email across project metadata, CI, and documentation.
 1.5 [x] Fix current TLS security risk in Mailgun HTTP adapter (remove unconditional certificate acceptance) before provider expansion.
 
 2. [x] Phase 2 - Introduce unified abstractions and project boundaries (depends on 1)
-2.1 [x] Create new DdotM.EmailClient.Infrastructure project to host shared provider-agnostic contracts for email sending, message, recipient, provider identification, options binding, and DI extension surface.
+2.1 [x] Create new IdempotentCookie.Email (Infrastructure) project to host shared provider-agnostic contracts for email sending, message, recipient, provider identification, options binding, and DI extension surface.
 2.2 [x] Add a single facade contract for application use (for DI consumers); provider projects are implementation details and must not leak provider-specific types in the main contract.
 2.3 [x] Normalize config validation behavior across providers (Mailgun and Office365 currently diverge).
 
-3. [ ] Phase 3 - Provider model and runtime selection (depends on 2)
-3.1 [ ] Implement explicit provider selection by configuration object type in DI (SmtpConfig, MailgunConfig, SendGridConfig, Office365Config), per agreed requirement.
-3.2 [ ] Preserve provider implementation order strictly as: SMTP, then Mailgun, then SendGrid, then Office365.
-3.3 [ ] Do not introduce failover behavior or failover extension points.
+3. [x] Phase 3 - Provider model and runtime selection (depends on 2)
+3.1 [x] Implement explicit provider selection by configuration object type in DI using services.AddEmailSending().UseMailgun(config) pattern.
+3.2 [x] Preserve provider implementation order strictly as: SMTP, then Mailgun, then SendGrid, then Office365.
+3.3 [x] Do not introduce failover behavior or failover extension points.
 
 4. [ ] Phase 4 - SMTP and SendGrid implementation (depends on 2, parallelizable)
 4.1 [ ] Add first-class generic SMTP provider (host/port/security/auth configurable; Office365 no longer the only SMTP path).
 4.2 [ ] Add SendGrid provider using official API patterns and robust request/response/error handling.
 4.3 [ ] Refactor Office365 provider to fit unified abstractions while retaining compatibility.
 4.4 [ ] Align Mailgun provider with shared abstractions and remove provider-specific behavior leaks from the main app contract.
-4.5 [ ] Ensure each provider has its own project and depends on DdotM.EmailClient.Infrastructure only.
+4.5 [ ] Ensure each provider has its own project and depends on IdempotentCookie.Email (Infrastructure) only.
 
 5. [ ] Phase 5 - ASP.NET Core integration surface (depends on 3,4)
 5.1 [ ] Add DI extension methods on IServiceCollection using the decided entry point: services.AddEmailSending().Use<Provider>(...).
@@ -53,22 +53,24 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 8.5 [ ] Validate APIs and best practices against current official docs during implementation rather than relying on historical assumptions.
 
 **Relevant files**
-- DdotM.EmailClient.slnx - primary solution format and project orchestration.
+- IdempotentCookie.Email.slnx - primary solution format and project orchestration.
 - .pipelines/azure-pipelines.yml - SDK version and multi-target build/test updates.
-- DdotM.EmailClient.Infrastructure/DdotM.EmailClient.Infrastructure.csproj - new shared abstractions and DI contract surface.
-- DdotM.EmailClient.Mailgun/DdotM.EmailClient.Mailgun.csproj - target frameworks, provider implementation alignment, and package metadata updates.
-- DdotM.EmailClient.SendGrid/DdotM.EmailClient.SendGrid.csproj - new provider project.
-- DdotM.EmailClient.Smtp/DdotM.EmailClient.Smtp.csproj - new provider project.
-- DdotM.EmailClient.Office365/DdotM.EmailClient.Office365.csproj - target frameworks and provider implementation alignment.
-- DdotM.EmailClient.Mailgun/HttpClientAdapter.cs - TLS/certificate validation hardening.
-- DdotM.EmailClient.Mailgun/MailgunClient.cs - provider implementation alignment with shared abstractions.
-- DdotM.EmailClient.Mailgun/MailgunClientConfig.cs - validation consistency with unified options model.
-- DdotM.EmailClient.Office365/Office365EmailClient.cs - abstraction alignment and SMTP responsibility cleanup.
-- DdotM.EmailClient.Office365/Office365ClientConfig.cs - validation and options alignment.
-- DdotM.EmailClient.Office365/EmailComposer.cs - DRY cleanup for recipient composition.
-- DdotM.EmailClient.Mailgun.Tests/DdotM.EmailClient.Mailgun.Tests.csproj - test target updates and test stack standardization.
-- DdotM.EmailClient.Mailgun.Tests/MailgunClientTests.cs - provider-agnostic and Mailgun-specific coverage baseline.
-- DdotM.EmailClient.Mailgun.Tests/MailgunClientConfigTests.cs - config validation baseline to expand across providers.
+- IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj - shared abstractions, DI contract surface, public package (IdempotentCookie.Email).
+- IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj - Mailgun provider implementation.
+- IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj - new provider project (Phase 4).
+- IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj - new provider project (Phase 4).
+- IdempotentCookie.Email.Office365/IdempotentCookie.Email.Office365.csproj - Office365 provider implementation.
+- IdempotentCookie.Email.Mailgun/HttpClientAdapter.cs - TLS/certificate validation hardening.
+- IdempotentCookie.Email.Mailgun/MailgunClient.cs - Mailgun-specific send implementation.
+- IdempotentCookie.Email.Mailgun/MailgunEmailClient.cs - IEmailClient adapter for DI.
+- IdempotentCookie.Email.Mailgun/MailgunEmailSendingBuilderExtensions.cs - UseMailgun DI extension.
+- IdempotentCookie.Email.Mailgun/MailgunClientConfig.cs - validation consistency with unified options model.
+- IdempotentCookie.Email.Office365/Office365EmailClient.cs - abstraction alignment and SMTP responsibility cleanup.
+- IdempotentCookie.Email.Office365/Office365ClientConfig.cs - validation and options alignment.
+- IdempotentCookie.Email.Office365/EmailComposer.cs - DRY cleanup for recipient composition.
+- IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj - test target updates and test stack standardization.
+- IdempotentCookie.Email.Mailgun.Tests/MailgunClientTests.cs - Mailgun-specific coverage baseline.
+- IdempotentCookie.Email.Mailgun.Tests/MailgunClientConfigTests.cs - config validation baseline to expand across providers.
 - README.md - package positioning and integration docs.
 - CONTRIBUTING.md - contributor workflow, coding conventions, local setup, and testing guidance.
 - AGENT.md - architecture and agent-focused contributor guidance.

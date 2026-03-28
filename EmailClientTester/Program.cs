@@ -1,6 +1,6 @@
-﻿using DdotM.EmailClient.Mailgun;
-using DdotM.EmailClient.Office365;
-using EmailMessage = DdotM.EmailClient.Office365.EmailMessage;
+﻿using IdempotentCookie.Email.Mailgun;
+using IdempotentCookie.Email.Office365;
+using EmailMessage = IdempotentCookie.Email.Office365.EmailMessage;
 
 namespace EmailClientTester;
 
