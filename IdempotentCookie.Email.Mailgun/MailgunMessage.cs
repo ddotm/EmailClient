@@ -13,17 +13,17 @@ public class MailgunMessage
     /// <summary>
     /// List of the To email recipients
     /// </summary>
-    public List<Recipient> ToEmails { get; } = new();
+    public List<Recipient> ToEmails { get; } = [];
 
     /// <summary>
     /// List of the Cc email recipients
     /// </summary>
-    public List<Recipient> CcEmails { get; } = new();
+    public List<Recipient> CcEmails { get; } = [];
 
     /// <summary>
     /// List of the Bcc email recipients
     /// </summary>
-    public List<Recipient> BccEmails { get; } = new();
+    public List<Recipient> BccEmails { get; } = [];
 
     /// <summary>
     /// Email subject
@@ -50,7 +50,12 @@ public class MailgunMessage
     /// <summary>
     /// Mailgun message tags
     /// </summary>
-    public List<string> Tags { get; } = new();
+    public List<string> Tags { get; } = [];
+
+    /// <summary>
+    /// File attachments included with the message.
+    /// </summary>
+    public List<EmailAttachment> Attachments { get; } = [];
 
     /// <summary>
     /// Controls message tracking. Default is false.
@@ -60,5 +65,5 @@ public class MailgunMessage
     /// <summary>
     /// Once the message send is attempted, Response will contain the Mailgun HTTP response data
     /// </summary>
-    public HttpResponseMessage Response { get; set; } = new ();
+    public HttpResponseMessage Response { get; set; } = new();
 }

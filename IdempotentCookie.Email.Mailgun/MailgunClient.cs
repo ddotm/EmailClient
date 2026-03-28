@@ -59,7 +59,7 @@ public class MailgunClient : IMailgunClient
     }
 
     /// <inheritdoc />
-    public async Task<MailgunMessage> SendAsync(MailgunMessage msg)
+    public async Task<MailgunMessage> SendAsync(MailgunMessage msg, CancellationToken cancellationToken = default)
     {
         var endpoint = _mailgunClientConfig.MailgunApiEndpoint;
         var content = _requestBuilder.Build(msg);
@@ -69,12 +69,12 @@ public class MailgunClient : IMailgunClient
         var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(credentials));
         _httpClientAdapter.AddHeader("Authorization", new AuthenticationHeaderValue("Basic", authToken).ToString());
 
-        var response = await _httpClientAdapter.PostAsync(endpoint, content);
+        var response = await _httpClientAdapter.PostAsync(endpoint, content, cancellationToken);
         msg.Response = response;
 
         if (!response.IsSuccessStatusCode)
         {
-            var error = await response.Content.ReadAsStringAsync();
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
             throw new HttpRequestException($"Mailgun API request failed with status code {response.StatusCode}: {error}");
         }
 

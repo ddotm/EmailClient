@@ -7,8 +7,13 @@ trigger:
   paths:
     include:
       - IdempotentCookie.Email.Infrastructure/**
+      - IdempotentCookie.Email.Smtp/**
       - IdempotentCookie.Email.Mailgun/**
+      - IdempotentCookie.Email.SendGrid/**
       - IdempotentCookie.Email.Office365/**
+      - IdempotentCookie.Email.Smtp.Tests/**
+      - IdempotentCookie.Email.Mailgun.Tests/**
+      - IdempotentCookie.Email.SendGrid.Tests/**
 
 pr: none
 
@@ -20,8 +25,8 @@ pool:
 variables:
   configuration:       'Release'
   dotNetVersion:       '10.x'
-  projectPath:         'IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj'
-  testProjectPath:     'IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj'
+  solutionPath:        'IdempotentCookie.Email.slnx'
+  packageProjectPath:  'IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj'
   outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
 
 stages:
@@ -44,22 +49,16 @@ stages:
             packageType: sdk
             version: '$(dotNetVersion)'
 
-        - script: dotnet restore $(projectPath)
-          displayName: 'Restore NuGet Packages in NuGet package project'
+        - script: dotnet restore $(solutionPath)
+          displayName: 'Restore Solution'
 
-        - script: dotnet restore $(testProjectPath)
-          displayName: 'Restore NuGet Packages in test project'
-
-        - script: dotnet build $(projectPath) --configuration $(configuration) --no-restore
+        - script: dotnet build $(solutionPath) --configuration $(configuration) --no-restore
           displayName: 'Build Solution'
 
-        - script: dotnet build $(testProjectPath) --configuration $(configuration) --no-restore
-          displayName: 'Build Solution'
-
-        - script: dotnet test $(testProjectPath) --configuration $(configuration) --no-build --verbosity normal
+        - script: dotnet test $(solutionPath) --configuration $(configuration) --no-build --verbosity normal
           displayName: 'Run Unit Tests'
 
-        - script: dotnet pack $(projectPath) --configuration $(configuration) --no-build -o $(outputDir)
+        - script: dotnet pack $(packageProjectPath) --configuration $(configuration) --no-build -o $(outputDir)
           displayName: 'Pack NuGet Package'
 
         - task: PublishBuildArtifacts@1

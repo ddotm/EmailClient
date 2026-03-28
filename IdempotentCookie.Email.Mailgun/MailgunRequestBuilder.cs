@@ -18,8 +18,32 @@ internal class MailgunRequestBuilder : IMailgunRequestBuilder
     public HttpContent Build(MailgunMessage msg)
     {
         var keyValues = BuildFieldDictionary(msg);
-        
-        return new FormUrlEncodedContent(keyValues);
+
+        if (msg.Attachments.Count == 0)
+        {
+            return new FormUrlEncodedContent(keyValues);
+        }
+
+        var content = new MultipartFormDataContent();
+
+        foreach (var keyValue in keyValues)
+        {
+            content.Add(new StringContent(keyValue.Value), keyValue.Key);
+        }
+
+        foreach (var attachment in msg.Attachments)
+        {
+            var attachmentContent = new ByteArrayContent(attachment.Content);
+
+            if (!string.IsNullOrWhiteSpace(attachment.ContentType))
+            {
+                attachmentContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(attachment.ContentType);
+            }
+
+            content.Add(attachmentContent, "attachment", attachment.FileName);
+        }
+
+        return content;
     }
 
     /// <summary>

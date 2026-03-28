@@ -27,7 +27,7 @@ internal sealed class MailgunEmailClient : IEmailClient
         ArgumentNullException.ThrowIfNull(message);
 
         var mailgunMessage = MapToMailgunMessage(message);
-        await _client.SendAsync(mailgunMessage);
+        await _client.SendAsync(mailgunMessage, cancellationToken);
     }
 
     private static MailgunMessage MapToMailgunMessage(EmailMessage message)
@@ -44,8 +44,7 @@ internal sealed class MailgunEmailClient : IEmailClient
         mg.Subject = message.Subject;
         mg.TextBody = message.TextBody;
         mg.HtmlBody = message.HtmlBody;
-
-        // Attachments: deferred to Phase 4
+        mg.Attachments.AddRange(message.Attachments);
 
         return mg;
     }

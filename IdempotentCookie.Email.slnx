@@ -11,9 +11,13 @@
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj" />
+    <Project Path="IdempotentCookie.Email.Smtp.Tests/IdempotentCookie.Email.Smtp.Tests.csproj" />
+    <Project Path="IdempotentCookie.Email.SendGrid.Tests/IdempotentCookie.Email.SendGrid.Tests.csproj" />
   </Folder>
   <Project Path="IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj" />
+  <Project Path="IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj" />
   <Project Path="IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj" />
+  <Project Path="IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj" />
   <Project Path="IdempotentCookie.Email.Office365/IdempotentCookie.Email.Office365.csproj" />
   <Project Path="EmailClientTester/EmailClientTester.csproj" />
 </Solution>

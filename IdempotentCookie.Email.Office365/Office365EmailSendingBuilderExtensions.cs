@@ -3,20 +3,20 @@ using IdempotentCookie.Email.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IdempotentCookie.Email.Mailgun;
+namespace IdempotentCookie.Email.Office365;
 
 /// <summary>
-/// Extends <see cref="IEmailSendingBuilder"/> with Mailgun provider registration.
+/// Extends <see cref="IEmailSendingBuilder"/> with Office365 provider registration.
 /// </summary>
-public static class MailgunEmailSendingBuilderExtensions
+public static class Office365EmailSendingBuilderExtensions
 {
     /// <summary>
-    /// Registers Mailgun as the active email provider.
+    /// Registers Office365 as the active email provider.
     /// </summary>
     /// <param name="builder">The email sending builder.</param>
-    /// <param name="config">Mailgun configuration. Validated at registration time.</param>
+    /// <param name="config">Office365 configuration. Validated at registration time.</param>
     /// <returns>The builder, for chaining.</returns>
-    public static IEmailSendingBuilder UseMailgun(this IEmailSendingBuilder builder, MailgunClientConfig config)
+    public static IEmailSendingBuilder UseOffice365(this IEmailSendingBuilder builder, Office365ClientConfig config)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(config);
@@ -27,7 +27,7 @@ public static class MailgunEmailSendingBuilderExtensions
         builder.Services.RemoveAll<IEmailClientConfiguration>();
         builder.Services.AddSingleton(config);
         builder.Services.AddSingleton<IEmailClientConfiguration>(config);
-        builder.Services.AddSingleton<IEmailClient>(_ => new MailgunEmailClient(config));
+        builder.Services.AddSingleton<IEmailClient>(_ => new Office365EmailClient(config));
 
         return builder;
     }

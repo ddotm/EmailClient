@@ -20,12 +20,12 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 3.2 [x] Preserve provider implementation order strictly as: SMTP, then Mailgun, then SendGrid, then Office365.
 3.3 [x] Do not introduce failover behavior or failover extension points.
 
-4. [ ] Phase 4 - SMTP and SendGrid implementation (depends on 2, parallelizable)
-4.1 [ ] Add first-class generic SMTP provider (host/port/security/auth configurable; Office365 no longer the only SMTP path).
-4.2 [ ] Add SendGrid provider using official API patterns and robust request/response/error handling.
-4.3 [ ] Refactor Office365 provider to fit unified abstractions while retaining compatibility.
-4.4 [ ] Align Mailgun provider with shared abstractions and remove provider-specific behavior leaks from the main app contract.
-4.5 [ ] Ensure each provider has its own project and depends on IdempotentCookie.Email (Infrastructure) only.
+4. [x] Phase 4 - SMTP and SendGrid implementation (depends on 2, parallelizable)
+4.1 [x] Add first-class generic SMTP provider (host/port/security/auth configurable; Office365 no longer the only SMTP path).
+4.2 [x] Add SendGrid provider using official API patterns and robust request/response/error handling.
+4.3 [x] Refactor Office365 provider to fit unified abstractions while retaining compatibility.
+4.4 [x] Align Mailgun provider with shared abstractions and remove provider-specific behavior leaks from the main app contract.
+4.5 [x] Ensure each provider has its own project and depends on IdempotentCookie.Email (Infrastructure) only.
 
 5. [ ] Phase 5 - ASP.NET Core integration surface (depends on 3,4)
 5.1 [ ] Add DI extension methods on IServiceCollection using the decided entry point: services.AddEmailSending().Use<Provider>(...).

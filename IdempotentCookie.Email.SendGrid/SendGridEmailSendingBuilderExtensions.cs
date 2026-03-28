@@ -3,20 +3,20 @@ using IdempotentCookie.Email.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IdempotentCookie.Email.Mailgun;
+namespace IdempotentCookie.Email.SendGrid;
 
 /// <summary>
-/// Extends <see cref="IEmailSendingBuilder"/> with Mailgun provider registration.
+/// Extends <see cref="IEmailSendingBuilder"/> with SendGrid provider registration.
 /// </summary>
-public static class MailgunEmailSendingBuilderExtensions
+public static class SendGridEmailSendingBuilderExtensions
 {
     /// <summary>
-    /// Registers Mailgun as the active email provider.
+    /// Registers SendGrid as the active email provider.
     /// </summary>
     /// <param name="builder">The email sending builder.</param>
-    /// <param name="config">Mailgun configuration. Validated at registration time.</param>
+    /// <param name="config">SendGrid configuration. Validated at registration time.</param>
     /// <returns>The builder, for chaining.</returns>
-    public static IEmailSendingBuilder UseMailgun(this IEmailSendingBuilder builder, MailgunClientConfig config)
+    public static IEmailSendingBuilder UseSendGrid(this IEmailSendingBuilder builder, SendGridClientConfig config)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(config);
@@ -27,7 +27,7 @@ public static class MailgunEmailSendingBuilderExtensions
         builder.Services.RemoveAll<IEmailClientConfiguration>();
         builder.Services.AddSingleton(config);
         builder.Services.AddSingleton<IEmailClientConfiguration>(config);
-        builder.Services.AddSingleton<IEmailClient>(_ => new MailgunEmailClient(config));
+        builder.Services.AddSingleton<IEmailClient>(_ => new SendGridEmailClient(config));
 
         return builder;
     }

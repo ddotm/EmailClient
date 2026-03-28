@@ -1,6 +1,6 @@
-﻿using IdempotentCookie.Email.Mailgun;
+﻿using IdempotentCookie.Email;
+using IdempotentCookie.Email.Mailgun;
 using IdempotentCookie.Email.Office365;
-using EmailMessage = IdempotentCookie.Email.Office365.EmailMessage;
 
 namespace EmailClientTester;
 
@@ -33,60 +33,65 @@ internal static class Program
     private static void CollectInputForOffice365Email()
     {
         Console.WriteLine($"Sender name: ");
-        EmailMessage.FromEmail.Name = Console.ReadLine();
+        EmailMessage.From.Name = ReadInput();
         Console.WriteLine($"Sender email address: ");
-        EmailMessage.FromEmail.Address = Console.ReadLine();
-        Console.WriteLine($"Sender password (for {EmailMessage.FromEmail.Address})");
-        Office365ClientConfig.Id = EmailMessage.FromEmail.Address;
-        Office365ClientConfig.Pwd = Console.ReadLine();
+        EmailMessage.From.Address = ReadInput();
+        Console.WriteLine($"Sender password (for {EmailMessage.From.Address})");
+        Office365ClientConfig.Id = EmailMessage.From.Address;
+        Office365ClientConfig.Pwd = ReadInput();
 
-        EmailMessage.BccEmails.Add(new EmailRecipient());
+        EmailMessage.BccRecipients.Add(new EmailAddress());
         Console.WriteLine($"Name of recipient:");
-        EmailMessage.BccEmails[0].Name = Console.ReadLine();
+        EmailMessage.BccRecipients[0].Name = ReadInput();
         Console.WriteLine($"Recipient email address:");
-        EmailMessage.BccEmails[0].Address = Console.ReadLine();
+        EmailMessage.BccRecipients[0].Address = ReadInput();
 
         Console.WriteLine($"Email subject:");
-        EmailMessage.Subject = Console.ReadLine();
+        EmailMessage.Subject = ReadInput();
         Console.WriteLine($"Email text:");
-        EmailMessage.TextBody = Console.ReadLine();
+        EmailMessage.TextBody = ReadInput();
         Console.Clear();
     }
 
     private static void CollectInputForMailgunEmail()
     {
         Console.WriteLine($"Sender name: ");
-        MailgunMessage.From.Name = Console.ReadLine();
+        MailgunMessage.From.Name = ReadInput();
         Console.WriteLine($"Sender email address: ");
-        MailgunMessage.From.Address = Console.ReadLine();
+        MailgunMessage.From.Address = ReadInput();
 
         Console.WriteLine($"Mailgun API key:");
-        MailgunClientConfig.ApiKey = Console.ReadLine();
+        MailgunClientConfig.ApiKey = ReadInput();
         Console.WriteLine($"Mailgun sending domain:");
-        MailgunClientConfig.SendingDomain = Console.ReadLine();
+        MailgunClientConfig.SendingDomain = ReadInput();
 
         MailgunMessage.ToEmails.Add(new Recipient());
         Console.WriteLine($"Name of recipient:");
-        MailgunMessage.ToEmails[0].Name = Console.ReadLine();
+        MailgunMessage.ToEmails[0].Name = ReadInput();
         Console.WriteLine($"Recipient email address:");
-        MailgunMessage.ToEmails[0].Address = Console.ReadLine();
+        MailgunMessage.ToEmails[0].Address = ReadInput();
 
         Console.WriteLine($"Email subject:");
-        MailgunMessage.Subject = Console.ReadLine();
+        MailgunMessage.Subject = ReadInput();
         Console.WriteLine($"Email text:");
-        MailgunMessage.TextBody = Console.ReadLine();
+        MailgunMessage.TextBody = ReadInput();
         Console.Clear();
+    }
+
+    private static string ReadInput()
+    {
+        return Console.ReadLine() ?? string.Empty;
     }
 
     private static void HardcodeInputForOffice365()
     {
-        EmailMessage.FromEmail.Name = "";
-        EmailMessage.FromEmail.Address = "";
+        EmailMessage.From.Name = "";
+        EmailMessage.From.Address = "";
 
-        Office365ClientConfig.Id = EmailMessage.FromEmail.Address;
+        Office365ClientConfig.Id = EmailMessage.From.Address;
         Office365ClientConfig.Pwd = "";
 
-        EmailMessage.BccEmails.Add(new EmailRecipient
+        EmailMessage.BccRecipients.Add(new EmailAddress
         {
             Name = "",
             Address = ""
@@ -129,7 +134,7 @@ internal static class Program
             Id = Office365ClientConfig.Id,
             Pwd = Office365ClientConfig.Pwd
         };
-        await using var office365Client = new Office365EmailClient(office365ClientConfig);
+        var office365Client = new Office365EmailClient(office365ClientConfig);
         await office365Client.SendAsync(EmailMessage);
     }
 

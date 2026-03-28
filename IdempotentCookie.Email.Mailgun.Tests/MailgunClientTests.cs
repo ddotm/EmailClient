@@ -108,7 +108,7 @@ public class MailgunClientTests
             Content = new StringContent("OK!")
         };
 
-        adapter.PostAsync(expectedEndpoint, testContent).Returns(Task.FromResult(httpResponse));
+        adapter.PostAsync(expectedEndpoint, testContent, Arg.Any<CancellationToken>()).Returns(Task.FromResult(httpResponse));
 
         var client = new MailgunClient(config, adapter, requestBuilder);
 
@@ -125,7 +125,7 @@ public class MailgunClientTests
         ));
 
         // PostAsync should have been called with correct endpoint and content
-        await adapter.Received(1).PostAsync(expectedEndpoint, testContent);
+        await adapter.Received(1).PostAsync(expectedEndpoint, testContent, Arg.Any<CancellationToken>());
 
         result.Should().NotBeNull();
         result.Response.Should().Be(httpResponse);
@@ -152,7 +152,7 @@ public class MailgunClientTests
             Content = new StringContent("Bad request test error")
         };
 
-        adapter.PostAsync(config.MailgunApiEndpoint, testContent).Returns(Task.FromResult(httpResponse));
+        adapter.PostAsync(config.MailgunApiEndpoint, testContent, Arg.Any<CancellationToken>()).Returns(Task.FromResult(httpResponse));
 
         var client = new MailgunClient(config, adapter, requestBuilder);
 
@@ -164,6 +164,6 @@ public class MailgunClientTests
             .WithMessage("Mailgun API request failed with status code BadRequest: Bad request test error");
 
         adapter.Received(1).AddHeader("Authorization", Arg.Any<string>());
-        await adapter.Received(1).PostAsync(config.MailgunApiEndpoint, testContent);
+        await adapter.Received(1).PostAsync(config.MailgunApiEndpoint, testContent, Arg.Any<CancellationToken>());
     }
 }

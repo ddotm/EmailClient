@@ -1,71 +1,62 @@
-﻿using MailKit;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+﻿using MailKit.Security;
+using IdempotentCookie.Email;
 
 namespace IdempotentCookie.Email.Office365;
 
-public class Office365EmailClient(Office365ClientConfig office365ClientConfig) : IOffice365EmailClient, IAsyncDisposable
+/// <summary>
+/// Implements <see cref="IEmailClient"/> for Office365 SMTP delivery.
+/// </summary>
+public sealed class Office365EmailClient : IOffice365EmailClient
 {
-    private readonly Office365ClientConfig _office365ClientConfig = office365ClientConfig ?? throw new ArgumentNullException(nameof(office365ClientConfig));
-    
-    private SmtpClient SmtpClient { get; set; }
+    private readonly Office365ClientConfig _office365ClientConfig;
+    private readonly IOffice365SmtpClientAdapterFactory _smtpClientFactory;
+    private readonly IOffice365MimeMessageFactory _mimeMessageFactory;
 
-    public async Task SendAsync(EmailMessage emailMessage)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Office365EmailClient"/> class.
+    /// </summary>
+    /// <param name="office365ClientConfig">Office365 configuration.</param>
+    public Office365EmailClient(Office365ClientConfig office365ClientConfig)
+        : this(office365ClientConfig, new Office365SmtpClientAdapterFactory(), new Office365MimeMessageFactory())
     {
-        SmtpClient = await Office365SmtpClientAsync(_office365ClientConfig.Id, _office365ClientConfig.Pwd);
-
-        var message = new MimeMessage();
-
-        EmailComposer.AddFromAddress(message, emailMessage.FromEmail.Name, emailMessage.FromEmail.Address);
-        foreach (var emailAddress in emailMessage.ToEmails)
-        {
-            EmailComposer.AddToAddress(message, emailAddress.Name, emailAddress.Address);
-        }
-
-        foreach (var emailAddress in emailMessage.CcEmails)
-        {
-            EmailComposer.AddCcAddress(message, emailAddress.Name, emailAddress.Address);
-        }
-
-        foreach (var emailAddress in emailMessage.BccEmails)
-        {
-            EmailComposer.AddBccAddress(message, emailAddress.Name, emailAddress.Address);
-        }
-
-        message.Subject = emailMessage.Subject;
-
-        var bodyBuilder = new BodyBuilder
-        {
-            HtmlBody = emailMessage.HtmlBody,
-            TextBody = emailMessage.TextBody
-        };
-
-        message.Body = bodyBuilder.ToMessageBody();
-
-        await SmtpClient.SendAsync(message);
     }
 
-    private static async Task<SmtpClient> Office365SmtpClientAsync(string user, string pwd)
+    internal Office365EmailClient(
+        Office365ClientConfig office365ClientConfig,
+        IOffice365SmtpClientAdapterFactory smtpClientFactory,
+        IOffice365MimeMessageFactory mimeMessageFactory)
     {
-        var client = new SmtpClient();
-        await client.ConnectAsync("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(user, pwd);
-
-        return client;
+        _office365ClientConfig = office365ClientConfig ?? throw new ArgumentNullException(nameof(office365ClientConfig));
+        _office365ClientConfig.Validate();
+        _smtpClientFactory = smtpClientFactory ?? throw new ArgumentNullException(nameof(smtpClientFactory));
+        _mimeMessageFactory = mimeMessageFactory ?? throw new ArgumentNullException(nameof(mimeMessageFactory));
     }
 
-    private static async Task CloseAsync(IMailService? smtpClient)
+    /// <inheritdoc />
+    public EmailProvider Provider => EmailProvider.Office365;
+
+    /// <inheritdoc />
+    public async Task SendAsync(EmailMessage emailMessage, CancellationToken cancellationToken = default)
     {
-        if (smtpClient != null)
+        ArgumentNullException.ThrowIfNull(emailMessage);
+
+        var message = _mimeMessageFactory.Create(emailMessage);
+        await using var smtpClient = _smtpClientFactory.Create();
+        var connected = false;
+
+        try
         {
-            await smtpClient.DisconnectAsync(true);
-            smtpClient.Dispose();
+            await smtpClient.ConnectAsync("smtp.office365.com", 587, SecureSocketOptions.StartTls, cancellationToken);
+            connected = true;
+            await smtpClient.AuthenticateAsync(_office365ClientConfig.Id, _office365ClientConfig.Pwd, cancellationToken);
+            await smtpClient.SendAsync(message, cancellationToken);
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await CloseAsync(SmtpClient);
+        finally
+        {
+            if (connected)
+            {
+                await smtpClient.DisconnectAsync(true, cancellationToken);
+            }
+        }
     }
 }
