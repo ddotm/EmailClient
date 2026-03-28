@@ -39,8 +39,8 @@ stages:
       displayName: '🔧 Build, Test, Pack'
       steps:
         - checkout: self
-          persistCredentials: true
-          clean: true
+          persistCredentials: "true"
+          clean: "true"
 
         - script: |
             echo "Branch: $(Build.SourceBranch)"
@@ -74,8 +74,8 @@ stages:
         - task: PublishBuildArtifacts@1
           displayName: 'Publish Build Artifacts'
           inputs:
-            pathToPublish: '$(outputDir)'
-            artifactName: 'nuget-package'
+            PathtoPublish: '$(outputDir)'
+            ArtifactName: 'nuget-package'
             publishLocation: 'Container'
 
 - stage: PublishNuGet
