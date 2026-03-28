@@ -45,17 +45,18 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 7.4 [x] Establish minimum coverage targets per provider and for shared abstraction layer.
 7.5 [x] Standardize test stack on xunit.v3 + NSubstitute + AwesomeAssertions and adapt existing tests accordingly.
 
-8. [ ] Phase 8 - Packaging, docs, and agent guidance (depends on 7)
-8.1 [ ] Update README from Mailgun-only to multi-provider usage and ASP.NET Core examples.
-8.2 [ ] Add CONTRIBUTING.md with coding conventions, local setup, testing guidelines, and contribution workflow.
-8.3 [ ] Add AGENT.md at repo root with architecture overview, design decisions, and agent guidance for future contributions.
-8.4 [ ] Finalize rebranded NuGet packaging metadata for unified package story and versioning notes.
-8.5 [ ] Validate APIs and best practices against current official docs during implementation rather than relying on historical assumptions.
+8. [x] Phase 8 - Packaging, docs, and agent guidance (depends on 7)
+8.1 [x] Update README from Mailgun-only to multi-provider usage and ASP.NET Core examples.
+8.2 [x] Add CONTRIBUTING.md with coding conventions, local setup, testing guidelines, and contribution workflow.
+8.3 [x] Add AGENT.md at repo root with architecture overview, design decisions, and agent guidance for future contributions.
+8.4 [x] Finalize rebranded NuGet packaging metadata for unified package story and versioning notes.
+8.5 [x] Validate APIs and best practices against current official docs during implementation rather than relying on historical assumptions.
 
 **Relevant files**
 - IdempotentCookie.Email.slnx - primary solution format and project orchestration.
 - .pipelines/azure-pipelines.yml - SDK version and multi-target build/test updates.
 - IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj - shared abstractions, DI contract surface, public package (IdempotentCookie.Email).
+- IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj - packaging project that produces the public IdempotentCookie.Email NuGet.
 - IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj - Mailgun provider implementation.
 - IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj - new provider project (Phase 4).
 - IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj - new provider project (Phase 4).

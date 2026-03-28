@@ -3,19 +3,7 @@ name: 'idempotentcookie-email-$(Date:yyyyMMdd)$(Rev:.r)'
 trigger:
   branches:
     include:
-      - master
-  paths:
-    include:
-      - IdempotentCookie.Email.Infrastructure/**
-      - IdempotentCookie.Email.DependencyInjection.Tests/**
-      - IdempotentCookie.Email.Smtp/**
-      - IdempotentCookie.Email.Mailgun/**
-      - IdempotentCookie.Email.SendGrid/**
-      - IdempotentCookie.Email.Office365/**
-      - IdempotentCookie.Email.Office365.Tests/**
-      - IdempotentCookie.Email.Smtp.Tests/**
-      - IdempotentCookie.Email.Mailgun.Tests/**
-      - IdempotentCookie.Email.SendGrid.Tests/**
+      - main
 
 pr: none
 
@@ -28,7 +16,7 @@ variables:
   configuration:       'Release'
   dotNetVersion:       '10.x'
   solutionPath:        'IdempotentCookie.Email.slnx'
-  packageProjectPath:  'IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj'
+  packageProjectPath:  'IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj'
   outputDir:           '$(Build.ArtifactStagingDirectory)/nuget'
 
 stages:
@@ -39,8 +27,57 @@ stages:
       displayName: '🔧 Build, Test, Pack'
       steps:
         - checkout: self
-          persistCredentials: "true"
-          clean: "true"
+          fetchDepth: "0"
+
+        - task: PowerShell@2
+          name: DetectPublishChanges
+          displayName: 'Detect Publishable Changes'
+          inputs:
+            targetType: 'inline'
+            pwsh: true
+            script: |
+              $publishablePrefixes = @(
+                'IdempotentCookie.Email.Infrastructure/',
+                'IdempotentCookie.Email.Smtp/',
+                'IdempotentCookie.Email.Mailgun/',
+                'IdempotentCookie.Email.SendGrid/',
+                'IdempotentCookie.Email.Office365/',
+                'IdempotentCookie.Email.Package/'
+              )
+
+              $shouldPublish = $true
+              $previousCommitAvailable = $true
+
+              try {
+                $baseCommit = (git rev-parse HEAD~1).Trim()
+              }
+              catch {
+                $previousCommitAvailable = $false
+              }
+
+              if ($previousCommitAvailable) {
+                $changedFiles = @(git diff --name-only $baseCommit HEAD | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+
+                Write-Host 'Changed files:'
+                foreach ($changedFile in $changedFiles) {
+                  Write-Host " - $changedFile"
+                }
+
+                $shouldPublish = $false
+                foreach ($changedFile in $changedFiles) {
+                  $normalizedPath = $changedFile.Replace('\', '/')
+                  if ($publishablePrefixes.Where({ $normalizedPath.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0) {
+                    $shouldPublish = $true
+                    break
+                  }
+                }
+              }
+              else {
+                Write-Host 'No previous commit available. Treating this run as publishable.'
+              }
+
+              Write-Host "Should publish package: $shouldPublish"
+              Write-Host "##vso[task.setvariable variable=ShouldPublishPackage;isOutput=true]$($shouldPublish.ToString().ToLowerInvariant())"
 
         - script: |
             echo "Branch: $(Build.SourceBranch)"
@@ -71,26 +108,27 @@ stages:
         - script: dotnet pack $(packageProjectPath) --configuration $(configuration) --no-build -o $(outputDir)
           displayName: 'Pack NuGet Package'
 
-        - task: PublishBuildArtifacts@1
-          displayName: 'Publish Build Artifacts'
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish NuGet Artifacts'
           inputs:
-            PathtoPublish: '$(outputDir)'
-            ArtifactName: 'nuget-package'
-            publishLocation: 'Container'
+            targetPath: '$(outputDir)'
+            artifact: 'nuget-package'
+            publishLocation: 'pipeline'
 
 - stage: PublishNuGet
   displayName: '🚀 Publish to NuGet.org'
   dependsOn: BuildTestPack
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(dependencies.BuildTestPack.outputs['Build.DetectPublishChanges.ShouldPublishPackage'], 'true'))
   jobs:
     - job: Push
       displayName: 'Push to NuGet.org'
       steps:
-        - task: DownloadBuildArtifacts@0
+        - task: DownloadPipelineArtifact@2
           displayName: 'Download Package Artifacts'
           inputs:
+            buildType: 'current'
             artifactName: 'nuget-package'
-            downloadPath: '$(Pipeline.Workspace)/artifacts'
+            targetPath: '$(Pipeline.Workspace)/artifacts'
 
         - task: NuGetToolInstaller@1
           displayName: 'Install NuGet Tool'

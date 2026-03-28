@@ -1,98 +1,154 @@
-# DdotM.EmailClient.Mailgun
+# IdempotentCookie.Email
 
-A simple .NET 8.0 client for sending email via [Mailgun’s HTTP API](https://documentation.mailgun.com/).  
+Unified email delivery package for .NET.  
+Supports SMTP, Mailgun, SendGrid, and Office365 through one public NuGet package.  
+Configure one provider per application. No failover is built in.
 
-[![NuGet](https://img.shields.io/nuget/v/DdotM.EmailClient.Mailgun.svg)](https://www.nuget.org/packages/DdotM.EmailClient.Mailgun)
+## Supported Providers
 
----
+- SMTP
+- Mailgun
+- SendGrid
+- Office365
 
-## Table of Contents
+## Install
 
-- [Features](#features)  
-- [Prerequisites](#prerequisites)  
-- [Installation](#installation)  
-- [Getting Started](#getting-started)  
-  - [Configure Your DNS](#configure-your-dns)  
-  - [Basic Usage](#basic-usage)  
+1. Run `dotnet add package IdempotentCookie.Email`.
+2. Import `IdempotentCookie.Email` plus the provider namespace you need.
 
----
+If you bind provider settings from configuration outside an ASP.NET Core Web SDK app, also add:
 
-## Features
+- `dotnet add package Microsoft.Extensions.Configuration.Binder`
+- `dotnet add package Microsoft.Extensions.Options.ConfigurationExtensions`
+- `dotnet add package Microsoft.Extensions.Options.DataAnnotations`
 
-- **.NET 8.0 / C# latest**  
-- **No dependencies**: .NET only, no external library dependencies  
-- **Built-in config validation** (`MailgunClientConfig`)  
-- **Supports:** `To`, `Cc`, `Bcc`, `From`, `Subject`, `Text` & `HTML` bodies, tags, tracking, scheduled delivery  
+## Register With Dependency Injection
 
----
-
-## Prerequisites
-
-1. Mailgun account & API key  
-2. Verified sending domain in Mailgun (Mailgun provides DNS record instructions when you set up a Sending Domain)  
-
----
-
-## Installation
-
-```bash
-dotnet add package DdotM.EmailClient.Mailgun
-```
-Or via Package Manager:
-```powershell
-Install-Package DdotM.EmailClient.Mailgun
-```
-
-## Getting Started
-
-### Obtain Mailgun Credentials
-
-1. **Sign in to Mailgun** and go to the **Sending** section in your dashboard.  
-2. **Add or verify** your sending domain (e.g. `mg.yourdomain.com`).  
-3. Navigate to the **API Keys** or **Security** tab and **create a new API key**.  
-4. **Save your API key** in a secure location (environment variable, secrets store, etc.)—you’ll need it in your application.
-
-### Configure Your DNS
-
-After adding your sending domain in the Mailgun dashboard, Mailgun will display a set of DNS records (SPF, DKIM, DMARC, tracking CNAME, etc.).  
-
-1. **Log in to your DNS provider** (where you registered your domain).  
-2. **Create or update** the records exactly as Mailgun specifies for your sending domain (e.g. `mg.yourdomain.com`).  
-3. **Save** your changes and wait for propagation (usually < 60 minutes).  
-4. **Verify** using a DNS lookup tool (`dig`, `nslookup`, or [MXToolbox](https://mxtoolbox.com)) that each record resolves correctly.
-
-### Basic Usage
+1. Import the DI namespace and one provider namespace.
+2. Register exactly one provider in `Program.cs`.
+3. Resolve `IEmailClient` where you need to send mail.
 
 ```csharp
-using DdotM.EmailClient.Mailgun;
+using IdempotentCookie.Email.DependencyInjection;
+using IdempotentCookie.Email.Smtp;
 
-// 1. Configure
-var config = new MailgunClientConfig
-{
-    ApiKey        = "YOUR_MAILGUN_API_KEY",
-    SendingDomain = "mg.yourdomain.com"
-};
+var builder = WebApplication.CreateBuilder(args);
 
-// 2. Create client
-var mailer = new MailgunClient(config);
-
-// 3. Build message
-var msg = new MailgunMessage
-{
-    From         = new Recipient { Name = "Alice", Address = "alice@yourdomain.com" },
-    Subject      = "Hello from Mailgun!",
-    TextBody     = "This is a plain-text body.",
-    HtmlBody     = "<p>This is an HTML body.</p>",
-    Tracking     = true,
-    DeliveryTime = DateTime.UtcNow.AddMinutes(10)
-};
-
-// 4. Add recipients & tags
-msg.ToEmails.Add(new Recipient { Name = "Bob", Address = "bob@example.com" });
-msg.CcEmails.Add(new Recipient { Name = "Eve", Address = "eve@example.org" });
-msg.Tags.Add("welcome-email");
-
-// 5. Send
-MailgunMessage result = await mailer.SendAsync(msg);
-Console.WriteLine($"Status: {result.Response.StatusCode}");
+builder.Services
+  .AddEmailSending()
+  .UseSmtp(new SmtpClientConfig
+  {
+    Host = "smtp.example.com",
+    Port = 587,
+    Security = SmtpConnectionSecurity.StartTls,
+    UserName = "mailer",
+    Password = "secret"
+  });
 ```
+
+If you prefer to hydrate SMTP settings from configuration, bind the section once during startup, validate it, then pass the bound config into `UseSmtp(...)`. The library does not define a built-in section name, so pick one such as `Email:Smtp`.
+
+```csharp
+using IdempotentCookie.Email.DependencyInjection;
+using IdempotentCookie.Email.Smtp;
+using Microsoft.Extensions.Configuration;
+
+var builder = WebApplication.CreateBuilder(args);
+const string smtpSectionName = "Email:Smtp";
+
+builder.Services
+  .AddOptions<SmtpClientConfig>()
+  .Bind(builder.Configuration.GetRequiredSection(smtpSectionName))
+  .ValidateDataAnnotations()
+  .ValidateOnStart();
+
+var smtpConfig = new SmtpClientConfig();
+builder.Configuration.GetRequiredSection(smtpSectionName).Bind(smtpConfig);
+smtpConfig.Validate();
+
+builder.Services
+  .AddEmailSending()
+  .UseSmtp(smtpConfig);
+```
+
+## Send With Dependency Injection
+
+1. Inject `IEmailClient`.
+2. Build an `EmailMessage`.
+3. Call `SendAsync`.
+
+```csharp
+using IdempotentCookie.Email;
+
+public sealed class WelcomeEmailSender(IEmailClient emailClient)
+{
+  public async Task SendWelcomeEmailAsync(CancellationToken cancellationToken)
+  {
+    var message = new EmailMessage
+    {
+      From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+      Subject = "Hello",
+      TextBody = "Hello from IdempotentCookie.Email",
+      HtmlBody = "<p>Hello from IdempotentCookie.Email</p>"
+    };
+
+    message.ToRecipients.Add(new EmailAddress
+    {
+      Address = "recipient@example.com",
+      Name = "Recipient"
+    });
+
+    await emailClient.SendAsync(message, cancellationToken);
+  }
+}
+```
+
+## Use Without Dependency Injection
+
+1. Create a provider configuration object.
+2. Call `CreateClient()`.
+3. Send the message through `IEmailClient`.
+
+```csharp
+using IdempotentCookie.Email;
+using IdempotentCookie.Email.Mailgun;
+
+public sealed class MailgunSmokeTest
+{
+  public async Task RunAsync(CancellationToken cancellationToken)
+  {
+    var config = new MailgunClientConfig
+    {
+      ApiKey = "key-...",
+      SendingDomain = "mg.example.com"
+    };
+
+    var message = new EmailMessage
+    {
+      From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+      Subject = "Hello",
+      TextBody = "Hello from IdempotentCookie.Email"
+    };
+
+    message.ToRecipients.Add(new EmailAddress { Address = "recipient@example.com", Name = "Recipient" });
+
+    IEmailClient client = config.CreateClient();
+    await client.SendAsync(message, cancellationToken);
+  }
+}
+```
+
+## Provider Namespaces
+
+- `IdempotentCookie.Email.DependencyInjection`
+- `IdempotentCookie.Email.Smtp`
+- `IdempotentCookie.Email.Mailgun`
+- `IdempotentCookie.Email.SendGrid`
+- `IdempotentCookie.Email.Office365`
+
+## Local Validation
+
+1. Run `dotnet restore IdempotentCookie.Email.slnx`.
+2. Run `dotnet build IdempotentCookie.Email.slnx -c Release`.
+3. Run `dotnet test IdempotentCookie.Email.slnx -c Release`.
+4. Run `dotnet pack IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build`.

@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="AGENT.md" />
+    <File Path="CONTRIBUTING.md" />
     <File Path="README.md" />
     <File Path=".gitignore" />
     <File Path=".editorconfig" />
@@ -17,6 +18,7 @@
     <Project Path="IdempotentCookie.Email.SendGrid.Tests/IdempotentCookie.Email.SendGrid.Tests.csproj" />
   </Folder>
   <Project Path="IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj" />
+  <Project Path="IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj" />
   <Project Path="IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj" />
   <Project Path="IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj" />
   <Project Path="IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj" />
