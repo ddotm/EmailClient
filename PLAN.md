@@ -32,16 +32,16 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 5.2 [x] One active provider per application in v1; no chaining or fallback. DI is first-class but optional — the package must be usable without DI.
 5.3 [x] Add options validation and startup-time diagnostics for invalid configuration.
 
-6. [ ] Phase 6 - Architecture optimization and cleanup (parallel with 4/5 where safe)
-6.1 [ ] Eliminate duplicated recipient/message concepts across provider projects by reusing shared model/contracts.
-6.2 [ ] Reduce SRP/DRY violations (notably Office365 composition methods and mixed auth/sending responsibilities).
-6.3 [ ] Keep public classes thin and orchestration-focused; move behavior behind interface-based internal/private services that are independently testable.
-6.4 [ ] Do not add backward compatibility adapters or obsoletes; old package remains unsupported as-is.
+6. [x] Phase 6 - Architecture optimization and cleanup (parallel with 4/5 where safe)
+6.1 [x] Eliminate duplicated recipient/message concepts across provider projects by reusing shared model/contracts.
+6.2 [x] Reduce SRP/DRY violations (notably Office365 composition methods and mixed auth/sending responsibilities).
+6.3 [x] Keep public classes thin and orchestration-focused; move behavior behind interface-based internal/private services that are independently testable.
+6.4 [x] Do not add backward compatibility adapters or obsoletes; old package remains unsupported as-is.
 
 7. [ ] Phase 7 - Tests and quality gates (depends on 4,5,6)
 7.1 [ ] Expand unit tests to cover SMTP, SendGrid, Office365, Mailgun request composition, validation, cancellation, and failure paths.
 7.2 [ ] Add integration-style tests with mocked HTTP/SMTP seams to verify end-to-end provider behavior.
-7.3 [ ] Add DI registration tests for AddEmailSupport(configObject) and provider selection behavior.
+7.3 [x] Add DI registration tests for AddEmailSupport(configObject) and provider selection behavior.
 7.4 [ ] Establish minimum coverage targets per provider and for shared abstraction layer.
 7.5 [ ] Standardize test stack on xUnit + NSubstitute + FluentAssertions and adapt existing tests accordingly.
 

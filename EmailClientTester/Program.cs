@@ -7,7 +7,6 @@ namespace EmailClientTester;
 internal static class Program
 {
     private static EmailMessage EmailMessage { get; set; } = new();
-    private static MailgunMessage MailgunMessage { get; set; } = new();
     private static Office365ClientConfig Office365ClientConfig { get; set; } = new();
     private static MailgunClientConfig MailgunClientConfig { get; set; } = new();
 
@@ -17,7 +16,6 @@ internal static class Program
         EmailMessage = new EmailMessage();
 
         MailgunClientConfig = new MailgunClientConfig();
-        MailgunMessage = new MailgunMessage();
 
         // CollectInputForOffice365Email();
         // HardcodeInputForOffice365();
@@ -26,8 +24,8 @@ internal static class Program
         // HardcodeInputForMailgun();
 
         // await TestOffice365Client();
-        var response = await TestMailgunClient();
-        Console.WriteLine($"Email sent with response code {response.Response.StatusCode}");
+        await TestMailgunClient();
+        Console.WriteLine("Email sent.");
     }
 
     private static void CollectInputForOffice365Email()
@@ -56,25 +54,25 @@ internal static class Program
     private static void CollectInputForMailgunEmail()
     {
         Console.WriteLine($"Sender name: ");
-        MailgunMessage.From.Name = ReadInput();
+        EmailMessage.From.Name = ReadInput();
         Console.WriteLine($"Sender email address: ");
-        MailgunMessage.From.Address = ReadInput();
+        EmailMessage.From.Address = ReadInput();
 
         Console.WriteLine($"Mailgun API key:");
         MailgunClientConfig.ApiKey = ReadInput();
         Console.WriteLine($"Mailgun sending domain:");
         MailgunClientConfig.SendingDomain = ReadInput();
 
-        MailgunMessage.ToEmails.Add(new Recipient());
+        EmailMessage.ToRecipients.Add(new EmailAddress());
         Console.WriteLine($"Name of recipient:");
-        MailgunMessage.ToEmails[0].Name = ReadInput();
+        EmailMessage.ToRecipients[0].Name = ReadInput();
         Console.WriteLine($"Recipient email address:");
-        MailgunMessage.ToEmails[0].Address = ReadInput();
+        EmailMessage.ToRecipients[0].Address = ReadInput();
 
         Console.WriteLine($"Email subject:");
-        MailgunMessage.Subject = ReadInput();
+        EmailMessage.Subject = ReadInput();
         Console.WriteLine($"Email text:");
-        MailgunMessage.TextBody = ReadInput();
+        EmailMessage.TextBody = ReadInput();
         Console.Clear();
     }
 
@@ -109,22 +107,18 @@ internal static class Program
         MailgunClientConfig.RequireTls = true;
         MailgunClientConfig.SkipVerification = false;
 
-        MailgunMessage.From.Name = "";
-        MailgunMessage.From.Address = "";
+        EmailMessage.From.Name = "";
+        EmailMessage.From.Address = "";
 
-        MailgunMessage.BccEmails.Add(new Recipient
+        EmailMessage.BccRecipients.Add(new EmailAddress
         {
             Name = "",
             Address = ""
         });
 
-        MailgunMessage.Subject = "Test message subject";
-        MailgunMessage.TextBody = "Test message text";
-        MailgunMessage.HtmlBody = $"<html><body><p>{MailgunMessage.TextBody}</p></body></html>";
-
-        MailgunMessage.Tags.Add("registration");
-        MailgunMessage.Tracking = false;
-        MailgunMessage.DeliveryTime = null;
+        EmailMessage.Subject = "Test message subject";
+        EmailMessage.TextBody = "Test message text";
+        EmailMessage.HtmlBody = $"<html><body><p>{EmailMessage.TextBody}</p></body></html>";
     }
 
     private static async Task TestOffice365Client()
@@ -134,11 +128,11 @@ internal static class Program
             Id = Office365ClientConfig.Id,
             Pwd = Office365ClientConfig.Pwd
         };
-        var office365Client = new Office365EmailClient(office365ClientConfig);
+        var office365Client = office365ClientConfig.CreateClient();
         await office365Client.SendAsync(EmailMessage);
     }
 
-    private static async Task<MailgunMessage> TestMailgunClient()
+    private static async Task TestMailgunClient()
     {
         var mailgunClientConfig = new MailgunClientConfig
         {
@@ -148,8 +142,7 @@ internal static class Program
             SkipVerification = false
         };
 
-        var mailgunClient = new MailgunClient(mailgunClientConfig);
-        var response = await mailgunClient.SendAsync(MailgunMessage);
-        return response;
+        var mailgunClient = mailgunClientConfig.CreateClient();
+        await mailgunClient.SendAsync(EmailMessage);
     }
 }

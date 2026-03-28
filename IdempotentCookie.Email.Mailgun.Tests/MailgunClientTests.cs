@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using AwesomeAssertions;
+using IdempotentCookie.Email;
 using NSubstitute;
 
 namespace IdempotentCookie.Email.Mailgun.Tests;
@@ -85,7 +86,7 @@ public class MailgunClientTests
     }
 
     [Fact]
-    public async Task MailgunClient_SendAsync_Success_ReturnsResponse()
+    public async Task MailgunClient_SendAsync_Success_PostsBuiltRequest()
     {
         // Arrange
         var config = new MailgunClientConfig
@@ -98,7 +99,7 @@ public class MailgunClientTests
         var adapter = Substitute.For<IHttpClientAdapter>();
         var requestBuilder = Substitute.For<IMailgunRequestBuilder>();
 
-        var testMessage = new MailgunMessage();
+        var testMessage = new EmailMessage();
         var testContent = new StringContent("test");
 
         requestBuilder.Build(testMessage).Returns(testContent);
@@ -113,7 +114,7 @@ public class MailgunClientTests
         var client = new MailgunClient(config, adapter, requestBuilder);
 
         // Act
-        var result = await client.SendAsync(testMessage);
+        await client.SendAsync(testMessage);
 
         // Assert
         // Check Authorization header is set with "Basic {base64}" pattern
@@ -127,8 +128,6 @@ public class MailgunClientTests
         // PostAsync should have been called with correct endpoint and content
         await adapter.Received(1).PostAsync(expectedEndpoint, testContent, Arg.Any<CancellationToken>());
 
-        result.Should().NotBeNull();
-        result.Response.Should().Be(httpResponse);
     }
 
     [Fact]
@@ -143,7 +142,7 @@ public class MailgunClientTests
         var adapter = Substitute.For<IHttpClientAdapter>();
         var requestBuilder = Substitute.For<IMailgunRequestBuilder>();
 
-        var testMessage = new MailgunMessage();
+        var testMessage = new EmailMessage();
         var testContent = new StringContent("fail-content");
         requestBuilder.Build(testMessage).Returns(testContent);
 

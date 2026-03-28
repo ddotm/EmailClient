@@ -16,6 +16,6 @@ public static class MailgunEmailSendingBuilderExtensions
     /// <returns>The builder, for chaining.</returns>
     public static IEmailSendingBuilder UseMailgun(this IEmailSendingBuilder builder, MailgunClientConfig config)
     {
-        return builder.RegisterProvider(config, static configuration => new MailgunEmailClient(configuration));
+        return builder.RegisterProvider(config, static configuration => new MailgunClient(configuration));
     }
 }

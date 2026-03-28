@@ -1,4 +1,6 @@
-﻿namespace IdempotentCookie.Email.Mailgun;
+﻿using IdempotentCookie.Email;
+
+namespace IdempotentCookie.Email.Mailgun;
 
 /// <inheritdoc />
 internal class MailgunRequestBuilder : IMailgunRequestBuilder
@@ -15,7 +17,7 @@ internal class MailgunRequestBuilder : IMailgunRequestBuilder
     }
 
     /// <inheritdoc />
-    public HttpContent Build(MailgunMessage msg)
+    public HttpContent Build(EmailMessage msg)
     {
         var keyValues = BuildFieldDictionary(msg);
 
@@ -51,32 +53,29 @@ internal class MailgunRequestBuilder : IMailgunRequestBuilder
     /// </summary>
     /// <param name="msg">The message to convert to key-value pairs.</param>
     /// <returns>A list of form fields for the request.</returns>
-    protected virtual List<KeyValuePair<string, string>> BuildFieldDictionary(MailgunMessage msg)
+    protected virtual List<KeyValuePair<string, string>> BuildFieldDictionary(EmailMessage msg)
     {
         var keyValues = new List<KeyValuePair<string, string>>
         {
-            new("from", msg.From.ToFullAddress()),
+            new("from", ToFullAddress(msg.From)),
             new("subject", msg.Subject),
             new("text", msg.TextBody),
             new("html", string.IsNullOrWhiteSpace(msg.HtmlBody) ? msg.TextBody : msg.HtmlBody),
             new("o:require-tls", _config.RequireTls ? "yes" : "no"),
-            new("o:skip-verification", _config.SkipVerification ? "yes" : "no"),
-            new("o:tracking", msg.Tracking ? "yes" : "no")
+            new("o:skip-verification", _config.SkipVerification ? "yes" : "no")
         };
 
-        keyValues.AddRange(msg.ToEmails.Select(to => new KeyValuePair<string, string>("to", to.ToFullAddress())));
-        keyValues.AddRange(msg.CcEmails.Select(cc => new KeyValuePair<string, string>("cc", cc.ToFullAddress())));
-        keyValues.AddRange(msg.BccEmails.Select(bcc => new KeyValuePair<string, string>("bcc", bcc.ToFullAddress())));
-        keyValues.AddRange(msg.Tags.Select(tag => new KeyValuePair<string, string>("o:tag", tag)));
-
-        // Only add delivery time if explicitly set
-        if (msg.DeliveryTime.HasValue)
-        {
-            keyValues.Add(new("o:deliverytime", msg.DeliveryTime.Value.ToString("ddd, dd MMM yyyy HH:mm:ss -0000")));
-        }
-
-        // Add future custom fields here...
+        keyValues.AddRange(msg.ToRecipients.Select(to => new KeyValuePair<string, string>("to", ToFullAddress(to))));
+        keyValues.AddRange(msg.CcRecipients.Select(cc => new KeyValuePair<string, string>("cc", ToFullAddress(cc))));
+        keyValues.AddRange(msg.BccRecipients.Select(bcc => new KeyValuePair<string, string>("bcc", ToFullAddress(bcc))));
 
         return keyValues;
+    }
+
+    private static string ToFullAddress(EmailAddress address)
+    {
+        return string.IsNullOrWhiteSpace(address.Name)
+            ? address.Address
+            : $"{address.Name} <{address.Address}>";
     }
 }

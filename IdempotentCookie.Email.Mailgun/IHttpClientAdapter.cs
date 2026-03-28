@@ -3,7 +3,7 @@
 /// <summary>
 /// Abstraction over HTTP client for sending requests (enables testability and DI).
 /// </summary>
-public interface IHttpClientAdapter : IDisposable
+internal interface IHttpClientAdapter : IDisposable
 {
     /// <summary>
     /// Adds a default header to all outgoing requests sent by this adapter.

@@ -1,12 +1,13 @@
-﻿using System.Net.Http.Headers;
+﻿using IdempotentCookie.Email;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace IdempotentCookie.Email.Mailgun;
 
 /// <summary>
-/// Implementation of <see cref="IMailgunClient"/> for sending emails via Mailgun.
+/// Implements <see cref="IEmailClient"/> using the Mailgun HTTP API.
 /// </summary>
-public class MailgunClient : IMailgunClient
+internal sealed class MailgunClient : IEmailClient
 {
     private readonly MailgunClientConfig _mailgunClientConfig;
     private readonly IHttpClientAdapter _httpClientAdapter;
@@ -19,7 +20,7 @@ public class MailgunClient : IMailgunClient
     /// <param name="config">
     /// The <see cref="MailgunClientConfig"/> containing Mailgun API key, sending domain, and other settings.
     /// </param>
-    public MailgunClient(MailgunClientConfig config)
+    internal MailgunClient(MailgunClientConfig config)
         : this(
             config,
             new HttpClientAdapter(),
@@ -59,7 +60,10 @@ public class MailgunClient : IMailgunClient
     }
 
     /// <inheritdoc />
-    public async Task<MailgunMessage> SendAsync(MailgunMessage msg, CancellationToken cancellationToken = default)
+    public EmailProvider Provider => EmailProvider.Mailgun;
+
+    /// <inheritdoc />
+    public async Task SendAsync(EmailMessage msg, CancellationToken cancellationToken = default)
     {
         var endpoint = _mailgunClientConfig.MailgunApiEndpoint;
         var content = _requestBuilder.Build(msg);
@@ -70,14 +74,11 @@ public class MailgunClient : IMailgunClient
         _httpClientAdapter.AddHeader("Authorization", new AuthenticationHeaderValue("Basic", authToken).ToString());
 
         var response = await _httpClientAdapter.PostAsync(endpoint, content, cancellationToken);
-        msg.Response = response;
 
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadAsStringAsync(cancellationToken);
             throw new HttpRequestException($"Mailgun API request failed with status code {response.StatusCode}: {error}");
         }
-
-        return msg;
     }
 }

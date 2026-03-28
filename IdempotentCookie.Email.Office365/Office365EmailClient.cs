@@ -6,7 +6,7 @@ namespace IdempotentCookie.Email.Office365;
 /// <summary>
 /// Implements <see cref="IEmailClient"/> for Office365 SMTP delivery.
 /// </summary>
-public sealed class Office365EmailClient : IOffice365EmailClient
+internal sealed class Office365EmailClient : IEmailClient
 {
     private readonly Office365ClientConfig _office365ClientConfig;
     private readonly IOffice365SmtpClientAdapterFactory _smtpClientFactory;
@@ -16,7 +16,7 @@ public sealed class Office365EmailClient : IOffice365EmailClient
     /// Initializes a new instance of the <see cref="Office365EmailClient"/> class.
     /// </summary>
     /// <param name="office365ClientConfig">Office365 configuration.</param>
-    public Office365EmailClient(Office365ClientConfig office365ClientConfig)
+    internal Office365EmailClient(Office365ClientConfig office365ClientConfig)
         : this(office365ClientConfig, new Office365SmtpClientAdapterFactory(), new Office365MimeMessageFactory())
     {
     }
