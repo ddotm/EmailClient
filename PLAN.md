@@ -27,10 +27,10 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 4.4 [x] Align Mailgun provider with shared abstractions and remove provider-specific behavior leaks from the main app contract.
 4.5 [x] Ensure each provider has its own project and depends on IdempotentCookie.Email (Infrastructure) only.
 
-5. [ ] Phase 5 - ASP.NET Core integration surface (depends on 3,4)
-5.1 [ ] Add DI extension methods on IServiceCollection using the decided entry point: services.AddEmailSending().Use<Provider>(...).
-5.2 [ ] One active provider per application in v1; no chaining or fallback. DI is first-class but optional — the package must be usable without DI.
-5.3 [ ] Add options validation and startup-time diagnostics for invalid configuration.
+5. [x] Phase 5 - ASP.NET Core integration surface (depends on 3,4)
+5.1 [x] Add DI extension methods on IServiceCollection using the decided entry point: services.AddEmailSending().Use<Provider>(...).
+5.2 [x] One active provider per application in v1; no chaining or fallback. DI is first-class but optional — the package must be usable without DI.
+5.3 [x] Add options validation and startup-time diagnostics for invalid configuration.
 
 6. [ ] Phase 6 - Architecture optimization and cleanup (parallel with 4/5 where safe)
 6.1 [ ] Eliminate duplicated recipient/message concepts across provider projects by reusing shared model/contracts.

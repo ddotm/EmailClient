@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace IdempotentCookie.Email.DependencyInjection;
 
@@ -16,6 +18,8 @@ public static class ServiceCollectionExtensions
     public static IEmailSendingBuilder AddEmailSending(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
+
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, EmailSendingStartupValidationHostedService>());
 
         return new EmailSendingBuilder(services);
     }

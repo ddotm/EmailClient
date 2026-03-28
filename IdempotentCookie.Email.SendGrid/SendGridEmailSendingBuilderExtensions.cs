@@ -1,7 +1,5 @@
 using IdempotentCookie.Email;
 using IdempotentCookie.Email.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace IdempotentCookie.Email.SendGrid;
 
@@ -18,17 +16,6 @@ public static class SendGridEmailSendingBuilderExtensions
     /// <returns>The builder, for chaining.</returns>
     public static IEmailSendingBuilder UseSendGrid(this IEmailSendingBuilder builder, SendGridClientConfig config)
     {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(config);
-
-        config.Validate();
-
-        builder.Services.RemoveAll<IEmailClient>();
-        builder.Services.RemoveAll<IEmailClientConfiguration>();
-        builder.Services.AddSingleton(config);
-        builder.Services.AddSingleton<IEmailClientConfiguration>(config);
-        builder.Services.AddSingleton<IEmailClient>(_ => new SendGridEmailClient(config));
-
-        return builder;
+        return builder.RegisterProvider(config, static configuration => new SendGridEmailClient(configuration));
     }
 }
