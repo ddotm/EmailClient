@@ -41,7 +41,6 @@ stages:
                 'IdempotentCookie.Email.Smtp/',
                 'IdempotentCookie.Email.Mailgun/',
                 'IdempotentCookie.Email.SendGrid/',
-                'IdempotentCookie.Email.Office365/',
                 'IdempotentCookie.Email.Package/'
               )
 
@@ -101,7 +100,6 @@ stages:
             dotnet test IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj --configuration $(configuration) --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
             dotnet test IdempotentCookie.Email.Smtp.Tests/IdempotentCookie.Email.Smtp.Tests.csproj --configuration $(configuration) --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
             dotnet test IdempotentCookie.Email.SendGrid.Tests/IdempotentCookie.Email.SendGrid.Tests.csproj --configuration $(configuration) --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-            dotnet test IdempotentCookie.Email.Office365.Tests/IdempotentCookie.Email.Office365.Tests.csproj --configuration $(configuration) --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
             dotnet test IdempotentCookie.Email.DependencyInjection.Tests/IdempotentCookie.Email.DependencyInjection.Tests.csproj --configuration $(configuration) --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
           displayName: 'Enforce Coverage Thresholds'
 

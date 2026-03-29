@@ -12,7 +12,5 @@ public enum EmailProvider
   /// <summary>Mailgun delivery.</summary>
   Mailgun = 2,
   /// <summary>SendGrid delivery.</summary>
-  SendGrid = 3,
-  /// <summary>Microsoft Office 365 delivery.</summary>
-  Office365 = 4
+  SendGrid = 3
 }

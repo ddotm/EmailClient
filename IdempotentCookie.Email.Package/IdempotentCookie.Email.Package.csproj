@@ -8,12 +8,12 @@
     <IsPackable>true</IsPackable>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <PackageId>IdempotentCookie.Email</PackageId>
-    <PackageTags>email, smtp, mailgun, sendgrid, office365, email-client, transactional-email</PackageTags>
+    <PackageTags>email, smtp, mailgun, sendgrid, email-client, transactional-email</PackageTags>
     <PackageProjectUrl>https://github.com/ddotm/EmailClient</PackageProjectUrl>
     <Authors>Dmitri Mogilevski</Authors>
     <RepositoryUrl>https://github.com/ddotm/EmailClient</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>Unified multi-provider email client for ASP.NET Core. Supports SMTP, Mailgun, SendGrid, and Office365.</Description>
+    <Description>Unified multi-provider email client for ASP.NET Core. Supports SMTP, Mailgun, and SendGrid.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>0.1.0-rc.1</Version>
@@ -45,9 +45,6 @@
         <PackagePath>lib\$(TargetFramework)\</PackagePath>
       </TfmSpecificPackageFile>
       <TfmSpecificPackageFile Include="$(MSBuildProjectDirectory)\..\IdempotentCookie.Email.SendGrid\bin\$(Configuration)\$(TargetFramework)\IdempotentCookie.Email.SendGrid.dll">
-        <PackagePath>lib\$(TargetFramework)\</PackagePath>
-      </TfmSpecificPackageFile>
-      <TfmSpecificPackageFile Include="$(MSBuildProjectDirectory)\..\IdempotentCookie.Email.Office365\bin\$(Configuration)\$(TargetFramework)\IdempotentCookie.Email.Office365.dll">
         <PackagePath>lib\$(TargetFramework)\</PackagePath>
       </TfmSpecificPackageFile>
     </ItemGroup>

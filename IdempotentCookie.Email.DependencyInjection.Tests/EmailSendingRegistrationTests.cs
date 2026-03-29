@@ -1,7 +1,6 @@
 using AwesomeAssertions;
 using IdempotentCookie.Email.DependencyInjection;
 using IdempotentCookie.Email.Mailgun;
-using IdempotentCookie.Email.Office365;
 using IdempotentCookie.Email.SendGrid;
 using IdempotentCookie.Email.Smtp;
 using Microsoft.Extensions.DependencyInjection;
@@ -136,7 +135,6 @@ public class EmailSendingRegistrationTests
     [Theory]
     [InlineData(EmailProvider.Mailgun)]
     [InlineData(EmailProvider.SendGrid)]
-    [InlineData(EmailProvider.Office365)]
     public async Task EmailSendingStartupValidationHostedService_StartAsync_WhenProviderIsConfigured_CompletesSuccessfully(EmailProvider provider)
     {
         // Arrange
@@ -156,13 +154,6 @@ public class EmailSendingRegistrationTests
                 services.AddEmailSending().UseSendGrid(new SendGridClientConfig
                 {
                     ApiKey = "SG.test-key"
-                });
-                break;
-            case EmailProvider.Office365:
-                services.AddEmailSending().UseOffice365(new Office365ClientConfig
-                {
-                    Id = "sender@example.com",
-                    Pwd = "secret"
                 });
                 break;
             default:

@@ -6,14 +6,13 @@
 - `IdempotentCookie.Email.Smtp/` contains the SMTP provider.
 - `IdempotentCookie.Email.Mailgun/` contains the Mailgun provider.
 - `IdempotentCookie.Email.SendGrid/` contains the SendGrid provider.
-- `IdempotentCookie.Email.Office365/` contains the Office365 provider.
 - `IdempotentCookie.Email.Package/` contains NuGet packaging metadata and package composition.
 - `IdempotentCookie.Email.*.Tests/` contains unit and registration tests.
 - `.pipelines/azure-pipelines.yml` contains CI and package publishing rules.
 
 ## Architecture Rules
 
-- Provider order is fixed: SMTP, Mailgun, SendGrid, Office365.
+- Provider order is fixed: SMTP, Mailgun, SendGrid.
 - No failover logic is allowed.
 - One active provider per application is allowed.
 - Public contract is shared models, `IEmailClient`, config types, `CreateClient()` extensions, and `AddEmailSending().Use<Provider>(...)`.

@@ -1,7 +1,7 @@
 # IdempotentCookie.Email
 
 Unified email delivery package for .NET.  
-Supports SMTP, Mailgun, SendGrid, and Office365 through one public NuGet package.  
+Supports SMTP, Mailgun, and SendGrid through one public NuGet package.  
 Configure one provider per application. No failover is built in.
 
 ## Supported Providers
@@ -9,7 +9,6 @@ Configure one provider per application. No failover is built in.
 - SMTP
 - Mailgun
 - SendGrid
-- Office365
 
 ## Install
 
@@ -144,11 +143,3 @@ public sealed class MailgunSmokeTest
 - `IdempotentCookie.Email.Smtp`
 - `IdempotentCookie.Email.Mailgun`
 - `IdempotentCookie.Email.SendGrid`
-- `IdempotentCookie.Email.Office365`
-
-## Local Validation
-
-1. Run `dotnet restore IdempotentCookie.Email.slnx`.
-2. Run `dotnet build IdempotentCookie.Email.slnx -c Release`.
-3. Run `dotnet test IdempotentCookie.Email.slnx -c Release`.
-4. Run `dotnet pack IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build`.

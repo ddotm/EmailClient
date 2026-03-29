@@ -16,7 +16,7 @@ internal sealed class EmailSendingStartupValidationHostedService(IServiceProvide
         if (configuration is null || client is null)
         {
             throw new InvalidOperationException(
-                "Email sending was added to the service collection, but no provider was configured. Call services.AddEmailSending().UseSmtp(...), UseMailgun(...), UseSendGrid(...), or UseOffice365(...)."
+                "Email sending was added to the service collection, but no provider was configured. Call services.AddEmailSending().UseSmtp(...), UseMailgun(...), or UseSendGrid(...)."
             );
         }
 

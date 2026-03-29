@@ -10,7 +10,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdempotentCookie.Email.Mailgun\IdempotentCookie.Email.Mailgun.csproj" />
-		<ProjectReference Include="..\IdempotentCookie.Email.Office365\IdempotentCookie.Email.Office365.csproj" />
+		<ProjectReference Include="..\IdempotentCookie.Email.SendGrid\IdempotentCookie.Email.SendGrid.csproj" />
+		<ProjectReference Include="..\IdempotentCookie.Email.Smtp\IdempotentCookie.Email.Smtp.csproj" />
 	</ItemGroup>
 
 </Project>
