@@ -194,3 +194,20 @@ The modernization effort requires consistent architectural discipline and qualit
 2. Tests align with architecture boundaries and support safer refactoring.
 3. Contributor onboarding and agent-assisted work become more reliable through explicit documentation.
 4. The team accepts up-front documentation and design effort to reduce long-term delivery risk.
+
+
+# Repository migration
+- old repo https://github.com/ddotm/EmailClient.git
+- new repo https://github.com/ddotm/idempotent-cookie-email.git
+- Copy the entire root directory except .git to the new location
+```bash
+git init
+
+git add .
+git commit -m "Initial commit (migrated from legacy repo)"
+
+git branch -M main   # optional if default already set to main
+
+git remote add origin https://github.com/ddotm/idempotent-cookie-email.git
+git push -u origin main
+```
