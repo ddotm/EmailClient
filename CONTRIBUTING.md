@@ -17,7 +17,7 @@
 1. Run `dotnet restore IdempotentCookie.Email.slnx`.
 2. Run `dotnet build IdempotentCookie.Email.slnx -c Release`.
 3. Run `dotnet test IdempotentCookie.Email.slnx -c Release`.
-4. Run `dotnet pack IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build` when packaging changes are involved.
+4. Run `dotnet pack src/IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build` when packaging changes are involved.
 
 ## Coding Rules
 

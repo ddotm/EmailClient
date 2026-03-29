@@ -2,12 +2,12 @@
 
 ## Repo Map
 
-- `IdempotentCookie.Email.Infrastructure/` contains shared contracts, models, and DI entry points.
-- `IdempotentCookie.Email.Smtp/` contains the SMTP provider.
-- `IdempotentCookie.Email.Mailgun/` contains the Mailgun provider.
-- `IdempotentCookie.Email.SendGrid/` contains the SendGrid provider.
-- `IdempotentCookie.Email.Package/` contains NuGet packaging metadata and package composition.
-- `IdempotentCookie.Email.*.Tests/` contains unit and registration tests.
+- `src/IdempotentCookie.Email.Infrastructure/` contains shared contracts, models, and DI entry points.
+- `src/IdempotentCookie.Email.Smtp/` contains the SMTP provider.
+- `src/IdempotentCookie.Email.Mailgun/` contains the Mailgun provider.
+- `src/IdempotentCookie.Email.SendGrid/` contains the SendGrid provider.
+- `src/IdempotentCookie.Email.Package/` contains NuGet packaging metadata and package composition.
+- `tests/` contains unit and registration test projects.
 - `.pipelines/azure-pipelines.yml` contains CI and package publishing rules.
 
 ## Architecture Rules
@@ -38,7 +38,7 @@
 - `dotnet restore IdempotentCookie.Email.slnx`
 - `dotnet build IdempotentCookie.Email.slnx -c Release`
 - `dotnet test IdempotentCookie.Email.slnx -c Release`
-- `dotnet pack IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build`
+- `dotnet pack src/IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj -c Release --no-build`
 
 ## Release Rules
 

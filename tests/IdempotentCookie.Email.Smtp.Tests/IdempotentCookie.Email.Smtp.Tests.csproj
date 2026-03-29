@@ -5,14 +5,13 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <AssemblyName>IdempotentCookie.Email.Mailgun.Tests</AssemblyName>
+    <AssemblyName>IdempotentCookie.Email.Smtp.Tests</AssemblyName>
     <Threshold>80</Threshold>
     <ThresholdType>line</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
-    <Include>[IdempotentCookie.Email.Mailgun*]*</Include>
+    <Include>[IdempotentCookie.Email.Smtp*]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,11 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdempotentCookie.Email.Mailgun\IdempotentCookie.Email.Mailgun.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\IdempotentCookie.Email.Smtp\IdempotentCookie.Email.Smtp.csproj" />
   </ItemGroup>
 
 </Project>

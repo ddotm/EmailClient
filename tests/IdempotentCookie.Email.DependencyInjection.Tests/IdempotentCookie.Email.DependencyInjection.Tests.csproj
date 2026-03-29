@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <AssemblyName>IdempotentCookie.Email.SendGrid.Tests</AssemblyName>
+    <AssemblyName>IdempotentCookie.Email.DependencyInjection.Tests</AssemblyName>
     <Threshold>80</Threshold>
     <ThresholdType>line</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
-    <Include>[IdempotentCookie.Email.SendGrid*]*</Include>
+    <Include>[IdempotentCookie.Email]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +24,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-    <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,7 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdempotentCookie.Email.SendGrid\IdempotentCookie.Email.SendGrid.csproj" />
+    <ProjectReference Include="..\..\src\IdempotentCookie.Email.Infrastructure\IdempotentCookie.Email.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\IdempotentCookie.Email.Mailgun\IdempotentCookie.Email.Mailgun.csproj" />
+    <ProjectReference Include="..\..\src\IdempotentCookie.Email.SendGrid\IdempotentCookie.Email.SendGrid.csproj" />
+    <ProjectReference Include="..\..\src\IdempotentCookie.Email.Smtp\IdempotentCookie.Email.Smtp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -54,19 +54,19 @@ Build a rebranded, ASP.NET Core-friendly package surface that supports SMTP, Mai
 **Relevant files**
 - IdempotentCookie.Email.slnx - primary solution format and project orchestration.
 - .pipelines/azure-pipelines.yml - SDK version and multi-target build/test updates.
-- IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj - shared abstractions, DI contract surface, public package (IdempotentCookie.Email).
-- IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj - packaging project that produces the public IdempotentCookie.Email NuGet.
-- IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj - Mailgun provider implementation.
-- IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj - new provider project (Phase 4).
-- IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj - new provider project (Phase 4).
-- IdempotentCookie.Email.Mailgun/HttpClientAdapter.cs - TLS/certificate validation hardening.
-- IdempotentCookie.Email.Mailgun/MailgunClient.cs - Mailgun-specific send implementation.
-- IdempotentCookie.Email.Mailgun/MailgunEmailClient.cs - IEmailClient adapter for DI.
-- IdempotentCookie.Email.Mailgun/MailgunEmailSendingBuilderExtensions.cs - UseMailgun DI extension.
-- IdempotentCookie.Email.Mailgun/MailgunClientConfig.cs - validation consistency with unified options model.
-- IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj - test target updates and test stack standardization.
-- IdempotentCookie.Email.Mailgun.Tests/MailgunClientTests.cs - Mailgun-specific coverage baseline.
-- IdempotentCookie.Email.Mailgun.Tests/MailgunClientConfigTests.cs - config validation baseline to expand across providers.
+- src/IdempotentCookie.Email.Infrastructure/IdempotentCookie.Email.Infrastructure.csproj - shared abstractions, DI contract surface, public package (IdempotentCookie.Email).
+- src/IdempotentCookie.Email.Package/IdempotentCookie.Email.Package.csproj - packaging project that produces the public IdempotentCookie.Email NuGet.
+- src/IdempotentCookie.Email.Mailgun/IdempotentCookie.Email.Mailgun.csproj - Mailgun provider implementation.
+- src/IdempotentCookie.Email.SendGrid/IdempotentCookie.Email.SendGrid.csproj - new provider project (Phase 4).
+- src/IdempotentCookie.Email.Smtp/IdempotentCookie.Email.Smtp.csproj - new provider project (Phase 4).
+- src/IdempotentCookie.Email.Mailgun/HttpClientAdapter.cs - TLS/certificate validation hardening.
+- src/IdempotentCookie.Email.Mailgun/MailgunClient.cs - Mailgun-specific send implementation.
+- src/IdempotentCookie.Email.Mailgun/MailgunEmailClient.cs - IEmailClient adapter for DI.
+- src/IdempotentCookie.Email.Mailgun/MailgunEmailSendingBuilderExtensions.cs - UseMailgun DI extension.
+- src/IdempotentCookie.Email.Mailgun/MailgunClientConfig.cs - validation consistency with unified options model.
+- tests/IdempotentCookie.Email.Mailgun.Tests/IdempotentCookie.Email.Mailgun.Tests.csproj - test target updates and test stack standardization.
+- tests/IdempotentCookie.Email.Mailgun.Tests/MailgunClientTests.cs - Mailgun-specific coverage baseline.
+- tests/IdempotentCookie.Email.Mailgun.Tests/MailgunClientConfigTests.cs - config validation baseline to expand across providers.
 - README.md - package positioning and integration docs.
 - CONTRIBUTING.md - contributor workflow, coding conventions, local setup, and testing guidance.
 - AGENT.md - architecture and agent-focused contributor guidance.
